@@ -2,6 +2,17 @@
 ## Free alternative to Meetup for personal usage
 
 ## Other Info
+
+## Common errors
+### 403 when deploying functions
+xxxxxxx@gcf-admin-robot.iam.gserviceaccount.com does not have storage.objects.create access to the Google Cloud Storage bucket
+
+**Fix**
+1. Turn on the Cloud Build API from API and services.
+2. Give storage.objects.create persmission to xxxxxxx@gcf-admin-robot.iam.gserviceaccount.com from IAM/Admin-->IAM.
+Select Include Google-provided role grants from top right corner.
+
+
 ### Google OAuth(One Tap Signin) with MongoDB Atlas
 https://www.mongodb.com/docs/atlas/app-services/authentication/google/
 ```

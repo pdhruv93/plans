@@ -1,0 +1,8 @@
+.toolbar {
+  justify-content: space-between;
+}
+
+.brand {
+  font-family: 'Rammetto One', cursive !important;
+  letter-spacing: 8px !important;
+}
