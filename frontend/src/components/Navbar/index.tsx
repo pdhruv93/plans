@@ -1,4 +1,4 @@
-import { getFirebaseAuth } from '../../firebase';
+import { firebaseAuth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
@@ -34,8 +34,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    const auth = getFirebaseAuth();
-    signOut(auth)
+    signOut(firebaseAuth)
       .then(() => {
         logoutAppUser();
         setFbAccessToken(undefined);
@@ -50,7 +49,7 @@ const Navbar = () => {
     <AppBar position='sticky' className={styles.container}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters className={styles.toolbar}>
-          <Typography variant='h5' color='primary' className={styles.brand}>
+          <Typography variant='h5' className={styles.brand}>
             PLANS
           </Typography>
 

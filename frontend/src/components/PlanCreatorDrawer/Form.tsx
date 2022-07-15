@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import { Autocomplete } from '@react-google-maps/api';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Formik } from 'formik';
-import { PlanFormInterface } from '../../interfaces';
+import { PlanFormInterface, PlanInterface } from '../../interfaces';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
@@ -23,25 +23,27 @@ export default function Form() {
     title: '',
     duration: 0,
     startTime: new Date(),
+    isPrivate: false,
     locationName: '',
     locationCoords: { lat: 0, lng: 0 },
     charges: 0,
     otherDetails: '',
-    isPrivate: false,
+    maxAttendees: 0,
   };
 
   const validationSchema = yup.object({
     title: yup.string().required(),
-    duration: yup.number().required(),
+    duration: yup.number().required().min(0),
     startTime: yup.date().required(),
+    isPrivate: yup.boolean().required(),
     locationName: yup.string().required(),
     locationCoords: yup.object({
       lat: yup.number().required(),
       lng: yup.number().required(),
     }),
-    charges: yup.number().required(),
+    charges: yup.number().required().min(0),
     otherDetails: yup.string(),
-    isPrivate: yup.boolean().required(),
+    maxAttendees: yup.number().required().min(0),
   });
 
   const onSubmit = async (values: PlanFormInterface) => {
@@ -58,11 +60,11 @@ export default function Form() {
       otherDetails: values.otherDetails,
     })
       .then(() => {
-        toast('Plan created successfully!!');
+        toast('Plan created successfully! Refresh the page to see changes!');
       })
       .catch((error) => {
         console.log(error);
-        toast('Some error creating Plan...');
+        toast.error('Some error creating Plan...');
       });
   };
 
@@ -159,6 +161,18 @@ export default function Form() {
               />
 
               <TextField
+                type='number'
+                label='Max Attendeed'
+                name='maxAttendees'
+                variant='outlined'
+                fullWidth
+                defaultValue={values.maxAttendees}
+                onChange={handleChange}
+                error={touched.maxAttendees && Boolean(errors.maxAttendees)}
+                helperText={errors.maxAttendees}
+              />
+
+              <TextField
                 label='Other Details'
                 name='otherDetails'
                 variant='outlined'
@@ -168,6 +182,7 @@ export default function Form() {
                 error={touched.otherDetails && Boolean(errors.otherDetails)}
                 helperText={errors.otherDetails}
               />
+
               <Box className={styles.switch}>
                 <FormControlLabel
                   label='Is Private?'

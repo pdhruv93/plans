@@ -1,6 +1,6 @@
 import { FacebookAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { UserInterface } from '../../interfaces';
-import { getFirebaseAuth } from '../../firebase';
+import { firebaseAuth } from '../../firebase';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { toast } from 'react-toastify';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -10,7 +10,6 @@ import Stack from '@mui/material/Stack';
 import useUserStore from '../../store/UserStore';
 
 export default function LoginButtons() {
-  const auth = getFirebaseAuth();
   const { addAppUser, setFbAccessToken } = useUserStore((state) => ({
     addAppUser: state.addAppUser,
     setFbAccessToken: state.setFbAccessToken,
@@ -20,7 +19,7 @@ export default function LoginButtons() {
   const handleLogin = async (providerType: 'google' | 'facebook') => {
     const provider =
       providerType === 'facebook' ? new FacebookAuthProvider() : new GoogleAuthProvider();
-    const response = await signInWithPopup(auth, provider);
+    const response = await signInWithPopup(firebaseAuth, provider);
     const user = response.user;
 
     if (providerType === 'facebook') {

@@ -30,33 +30,23 @@ export const getUserDetails = functions.https.onCall((data) => {
 
 // create a plan in DB
 export const createPlan = functions.https.onCall((data, context) => {
-  admin
+  return admin
     .firestore()
     .collection('plans')
     .add({ ...data, creator: context.auth?.uid, attendees: [context.auth?.uid] });
 });
 
-// get all public plans from db
-export const getAllPublicPlans = functions.https.onCall(() => {
+// get all active plans from DB
+export const getAllPlans = functions.https.onCall(() => {
   return admin
     .firestore()
     .collection('plans')
-    .where('isPrivate', '==', false)
-    .where('startTime', '>=', new Date())
-    .orderBy('startTime', 'desc')
     .get()
-    .then((snapshot) => snapshot.docs.map((doc) => doc.data()));
-});
-
-// get all plans for a user
-export const getAllPlansForUser = functions.https.onCall((data) => {
-  return admin
-    .firestore()
-    .collection('plans')
-    .where('attendees', 'array-contains', data.userId)
-    .orderBy('startTime', 'desc')
-    .get()
-    .then((snapshot) => snapshot.docs.map((doc) => doc.data()));
+    .then((snapshot) =>
+      snapshot.docs.map((doc) => {
+        return { planId: doc.id, ...doc.data() };
+      }),
+    );
 });
 
 // delete a plan from DB
