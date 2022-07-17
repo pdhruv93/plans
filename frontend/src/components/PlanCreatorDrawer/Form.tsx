@@ -48,7 +48,7 @@ export default function Form() {
     }),
     charges: yup.number().required().min(0),
     otherDetails: yup.string(),
-    maxAttendees: yup.number().required().min(0),
+    maxAttendees: yup.number().required().min(5),
   });
 
   const onSubmit = async (values: PlanFormInterface) => {

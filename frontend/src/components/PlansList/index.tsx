@@ -2,7 +2,6 @@ import { PlanInterface, PlansListPropsInterface } from '../../interfaces';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
-import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Box from '@mui/material/Box';
@@ -32,6 +31,7 @@ function PlansList({ planId }: PlansListPropsInterface) {
   const getPlans = httpsCallable(getFunctions(), 'getPlans');
   const getPlan = httpsCallable(getFunctions(), 'getPlan');
   const deletePlan = httpsCallable(getFunctions(), 'deletePlan');
+  const toggleAttendees = httpsCallable(getFunctions(), 'toggleAttendees');
 
   useEffect(() => {
     if (planId) {
@@ -65,8 +65,7 @@ function PlansList({ planId }: PlansListPropsInterface) {
 
   const deletePlanFromDB = (planId: string) => {
     deletePlan({ planId })
-      .then((response) => {
-        console.log(response);
+      .then(() => {
         toast.success('Plan deleted successfully!!');
         setPlans(plans.filter((plan) => plan.planId != planId));
       })
@@ -77,45 +76,13 @@ function PlansList({ planId }: PlansListPropsInterface) {
   };
 
   const toggleGoing = (planId: string) => {
-    if (appUser) {
-      const updatedPlans = plans.map((plan) => {
-        if (plan.planId === planId) {
-          const attendees = plan.attendees;
-
-          if (attendees?.includes(appUser?.userId)) {
-            // user is now not going, remove from attendees list
-            return {
-              ...plan,
-              attendees: attendees.filter((attendee) => attendee != appUser?.userId),
-            };
-          } else {
-            // user is now going, add to attendees list
-
-            return attendees
-              ? { ...plan, attendees: [...attendees, appUser.userId] }
-              : { ...plan, attendees: [appUser.userId] };
-          }
-        }
-
-        return plan;
-      });
-
-      setPlans(updatedPlans);
-    }
+    toggleAttendees({ planId }).then((updatedPlan) => {
+      console.log(updatedPlan);
+    });
   };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Alert severity='info' sx={{ mt: 3, mb: 1 }}>
-        Private plans are only shown if you have direct link or are in attendees list
-      </Alert>
-
-      {!appUser && (
-        <Alert severity='info' sx={{ mt: 1, mb: 3 }}>
-          You need to login in order to mark your presence
-        </Alert>
-      )}
-
       <Grid container spacing={2}>
         {plans.map((plan) => (
           <Grid key={`plan-${plan.planId}`} item md={3} xs={12}>
@@ -156,19 +123,23 @@ function PlansList({ planId }: PlansListPropsInterface) {
               </CardContent>
               <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <FormGroup>
-                  {appUser && (
-                    <FormControlLabel
-                      labelPlacement='start'
-                      control={
-                        <Switch
-                          checked={appUser ? plan.attendees?.includes(appUser?.userId) : false}
-                          disabled={appUser != null}
-                          onChange={() => toggleGoing(plan.planId)}
-                        />
-                      }
-                      label='Going?'
-                    />
-                  )}
+                  <FormControlLabel
+                    labelPlacement='start'
+                    control={
+                      <Switch
+                        checked={appUser ? plan.attendees?.includes(appUser?.userId) : false}
+                        disabled={
+                          appUser === null ||
+                          plan.creator === appUser?.userId ||
+                          (appUser != null &&
+                            !plan.attendees?.includes(appUser?.userId) &&
+                            plan.maxAttendees >= plan.attendees?.length)
+                        }
+                        onChange={() => toggleGoing(plan.planId)}
+                      />
+                    }
+                    label='Going?'
+                  />
                 </FormGroup>
 
                 <Box>

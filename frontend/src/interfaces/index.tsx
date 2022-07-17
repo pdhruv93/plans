@@ -11,7 +11,7 @@ export interface PlanInterface {
   };
   charges: number;
   otherDetails?: string;
-  attendees?: string[];
+  attendees: string[];
   maxAttendees: number;
 }
 

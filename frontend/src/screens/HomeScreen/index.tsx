@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Navbar from '../../components/Navbar';
 import PlanCreatorDrawer from '../../components/PlanCreatorDrawer';
@@ -18,6 +19,17 @@ function HomeScreen() {
       <Navbar />
       <Box className={styles.bodyContainer}>
         {appUser?.roles?.includes('admin') && <PlanCreatorDrawer />}
+
+        <Alert severity='info' sx={{ mt: 3, mb: 1 }}>
+          Private plans are only shown if you have direct link or are in attendees list
+        </Alert>
+
+        {!appUser && (
+          <Alert severity='info' sx={{ mt: 1, mb: 3 }}>
+            You need to login in order to mark your presence
+          </Alert>
+        )}
+
         {plans.length === 0 && <PlansSkeleton />}
         <PlansList planId={planId} />
       </Box>

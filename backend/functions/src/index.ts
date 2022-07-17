@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { createUser } from './createUser';
+import { toggleAttendeesInDB } from './toggleAttendeesInDB';
 
 admin.initializeApp();
 
@@ -15,14 +16,6 @@ export const getUsers = functions.https.onCall(() => {
     .get()
     .then((snapshot) => snapshot.docs.map((doc) => doc.data()));
 });
-
-// set user roles in custom claim for user as per users document
-export const updateUserClaim = functions.firestore
-  .document('/users/{id}')
-  .onWrite((snapshot, context) => {
-    const userId = context.params.id;
-    return admin.auth().setCustomUserClaims(userId, { roles: snapshot?.after?.data()?.roles });
-  });
 
 // create a plan in DB
 export const createPlan = functions.https.onCall((data, context) => {
@@ -55,15 +48,13 @@ export const getPlan = functions.https.onCall((data) => {
 
 // get plans from DB
 export const getPlans = functions.https.onCall((_, context) => {
-  const userId = context.auth?.uid;
+  const userId: string | undefined = context.auth?.uid;
 
   if (userId) {
-    // user is logged in
-    // return: public plans + private plan where user is in attendee list
+    // user is logged in, return: all plans
     return admin
       .firestore()
       .collection('plans')
-      .where('attendees', 'array-contains', userId)
       .get()
       .then((snapshot) =>
         snapshot.docs.map((doc) => ({
@@ -85,4 +76,19 @@ export const getPlans = functions.https.onCall((_, context) => {
         })),
       );
   }
+});
+
+// toggle attendee for particular plan and user
+export const toggleAttendees = functions.https.onCall(async (data, context) => {
+  const userId: string | undefined = context.auth?.uid;
+  const planId: string = data.planId;
+
+  await toggleAttendeesInDB(userId, planId);
+
+  return admin
+    .firestore()
+    .collection('plans')
+    .doc(planId)
+    .get()
+    .then((snapshot) => snapshot.data());
 });

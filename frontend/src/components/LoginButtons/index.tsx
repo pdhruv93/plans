@@ -1,4 +1,5 @@
 import { FacebookAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { UserInterface } from '../../interfaces';
 import { firebaseAuth } from '../../firebase';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -29,9 +30,16 @@ export default function LoginButtons() {
     }
 
     const loggedInUserDetails = users.find((user) => user.userId === loggedInUser.uid);
-    if (loggedInUserDetails) {
-      addAppUser(loggedInUserDetails);
-    }
+    addAppUser(
+      loggedInUserDetails ||
+        ({
+          userId: loggedInUser.uid,
+          name: loggedInUser.displayName,
+          email: loggedInUser.email,
+          photoURL: loggedInUser.photoURL,
+          roles: ['user'],
+        } as UserInterface),
+    );
   };
 
   return (
