@@ -14,9 +14,14 @@ import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import styles from './styles/PlanCreatorDrawer.module.css';
+import usePlansStore from '../../store/PlansStore';
 
 export default function Form() {
   const [autoComplete, setAutoComplete] = useState<google.maps.places.Autocomplete | null>(null);
+  const { plans, setPlans } = usePlansStore((state) => ({
+    plans: state.plans,
+    setPlans: state.setPlans,
+  }));
   const createPlan = httpsCallable(getFunctions(), 'createPlan');
 
   const initialValues: PlanFormInterface = {
@@ -59,8 +64,9 @@ export default function Form() {
       charges: values.charges,
       otherDetails: values.otherDetails,
     })
-      .then(() => {
-        toast('Plan created successfully! Refresh the page to see changes!');
+      .then((plan) => {
+        toast('Plan created successfully!');
+        setPlans([...plans, plan.data as PlanInterface]);
       })
       .catch((error) => {
         console.log(error);

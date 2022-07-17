@@ -12,9 +12,19 @@ xxxxxxx@gcf-admin-robot.iam.gserviceaccount.com does not have storage.objects.cr
 2. Give storage.objects.create persmission to xxxxxxx@gcf-admin-robot.iam.gserviceaccount.com from IAM/Admin-->IAM.
 Select Include Google-provided role grants from top right corner.
 
-## Firebase Related 
-### Check logs
+## Firebase Related
+
+### Initialize the firebase project
+
+
+### Check logs for a function
 firebase functions:log --only createPlan
+
+### Deploy only functions
+firebase deploy --only functions
+
+### Deploy only rules
+firebase deploy --only firestore:rules
 
 
 ### Google OAuth(One Tap Signin) with MongoDB Atlas

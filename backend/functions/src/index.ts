@@ -1,55 +1,88 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { createUser } from './createUser';
 
 admin.initializeApp();
 
-// Triggered when the user authenticates for the first time in app
-export const createUserOnLogin = functions.auth.user().onCreate((user) => {
-  admin
-    .firestore()
-    .collection('users')
-    .doc(user.uid)
-    .set({
-      userId: user.uid,
-      name: user.displayName,
-      email: user.email,
-      photoURL: user.photoURL,
-      roles: ['user'],
-    });
-});
+// create user in the users collection whenever a new user signs in
+export const createUserOnLogin = functions.auth.user().onCreate((user) => createUser(user));
 
-// return user details
-export const getUserDetails = functions.https.onCall((data) => {
+// get users from DB
+export const getUsers = functions.https.onCall(() => {
   return admin
     .firestore()
     .collection('users')
-    .doc(data.userId)
     .get()
-    .then((snapshot) => snapshot.data());
+    .then((snapshot) => snapshot.docs.map((doc) => doc.data()));
 });
+
+// set user roles in custom claim for user as per users document
+export const updateUserClaim = functions.firestore
+  .document('/users/{id}')
+  .onWrite((snapshot, context) => {
+    const userId = context.params.id;
+    return admin.auth().setCustomUserClaims(userId, { roles: snapshot?.after?.data()?.roles });
+  });
 
 // create a plan in DB
 export const createPlan = functions.https.onCall((data, context) => {
   return admin
     .firestore()
     .collection('plans')
-    .add({ ...data, creator: context.auth?.uid, attendees: [context.auth?.uid] });
-});
-
-// get all active plans from DB
-export const getAllPlans = functions.https.onCall(() => {
-  return admin
-    .firestore()
-    .collection('plans')
-    .get()
-    .then((snapshot) =>
-      snapshot.docs.map((doc) => {
-        return { planId: doc.id, ...doc.data() };
-      }),
-    );
+    .add({ ...data, creator: context.auth?.uid, attendees: [context.auth?.uid] })
+    .then((docRef) => ({
+      planId: docRef.id,
+      ...data,
+      creator: context.auth?.uid,
+      attendees: [context.auth?.uid],
+    }));
 });
 
 // delete a plan from DB
 export const deletePlan = functions.https.onCall((data) => {
-  admin.firestore().collection('plans').doc(data.planId).delete();
+  return admin.firestore().collection('plans').doc(data.planId).delete();
+});
+
+// get single plan
+export const getPlan = functions.https.onCall((data) => {
+  return admin
+    .firestore()
+    .collection('plans')
+    .doc(data.planId)
+    .get()
+    .then((snapshot) => snapshot.data());
+});
+
+// get plans from DB
+export const getPlans = functions.https.onCall((_, context) => {
+  const userId = context.auth?.uid;
+
+  if (userId) {
+    // user is logged in
+    // return: public plans + private plan where user is in attendee list
+    return admin
+      .firestore()
+      .collection('plans')
+      .where('attendees', 'array-contains', userId)
+      .get()
+      .then((snapshot) =>
+        snapshot.docs.map((doc) => ({
+          planId: doc.id,
+          ...doc.data(),
+        })),
+      );
+  } else {
+    // user is not logged in, return only public plans
+    return admin
+      .firestore()
+      .collection('plans')
+      .where('isPrivate', '==', false)
+      .get()
+      .then((snapshot) =>
+        snapshot.docs.map((doc) => ({
+          planId: doc.id,
+          ...doc.data(),
+        })),
+      );
+  }
 });

@@ -31,8 +31,6 @@ export interface PlanFormInterface {
 export interface PlansStoreInterface {
   plans: PlanInterface[] | [];
   setPlans: (plans: PlanInterface[]) => void;
-  getPlansForUser: (userId: string) => PlanInterface[];
-  getPublicPlans: () => PlanInterface[];
 }
 
 export interface UserInterface {
@@ -49,4 +47,13 @@ export interface UserStoreInterface {
   addAppUser: (userDetails: UserInterface) => void;
   setFbAccessToken: (token: string | undefined) => void;
   logoutAppUser: () => void;
+}
+
+export interface UsersStoreInterface {
+  users: UserInterface[];
+  setUsers: (users: UserInterface[]) => void;
+}
+
+export interface PlansListPropsInterface {
+  planId?: string;
 }

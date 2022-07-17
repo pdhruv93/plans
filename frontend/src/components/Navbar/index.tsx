@@ -1,6 +1,7 @@
 import { firebaseAuth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
@@ -17,6 +18,7 @@ import styles from './styles/Navbar.module.css';
 import useUserStore from '../../store/UserStore';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { appUser, logoutAppUser, fbAccessToken, setFbAccessToken } = useUserStore((state) => ({
     appUser: state.appUser,
     logoutAppUser: state.logoutAppUser,
@@ -49,7 +51,7 @@ const Navbar = () => {
     <AppBar position='sticky' className={styles.container}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters className={styles.toolbar}>
-          <Typography variant='h5' className={styles.brand}>
+          <Typography variant='h5' className={styles.brand} onClick={() => navigate('/')}>
             PLANS
           </Typography>
 

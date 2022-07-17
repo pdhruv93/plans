@@ -25,5 +25,6 @@ module.exports = {
   plugins: ['@typescript-eslint', 'import', 'prettier'],
   rules: {
     'import/no-unresolved': 0,
+    'require-jsdoc': 0,
   },
 };
