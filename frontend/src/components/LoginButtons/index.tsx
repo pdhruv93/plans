@@ -6,14 +6,10 @@ import GoogleIcon from '@mui/icons-material/Google';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import useUserStore from '../../store/UserStore';
-import useUsersStore from '../../store/UsersStore';
 
 export default function LoginButtons() {
-  const { users } = useUsersStore((state) => ({
+  const { users, addAppUser, setFbAccessToken } = useUserStore((state) => ({
     users: state.users,
-  }));
-
-  const { addAppUser, setFbAccessToken } = useUserStore((state) => ({
     addAppUser: state.addAppUser,
     setFbAccessToken: state.setFbAccessToken,
   }));

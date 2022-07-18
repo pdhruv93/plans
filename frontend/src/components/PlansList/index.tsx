@@ -19,11 +19,12 @@ import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import usePlansStore from '../../store/PlansStore';
 import useUserStore from '../../store/UserStore';
-import useUsersStore from '../../store/UsersStore';
 
 function PlansList({ planId }: PlansListPropsInterface) {
-  const { appUser } = useUserStore((state) => ({ appUser: state.appUser }));
-  const { users } = useUsersStore((state) => ({ users: state.users }));
+  const { appUser, users } = useUserStore((state) => ({
+    appUser: state.appUser,
+    users: state.users,
+  }));
   const { plans, setPlans } = usePlansStore((state) => ({
     plans: state.plans,
     setPlans: state.setPlans,
@@ -43,13 +44,21 @@ function PlansList({ planId }: PlansListPropsInterface) {
         }
       });
     } else {
-      getPlans().then((plans) => {
-        if (plans.data) {
-          setPlans(plans.data as PlanInterface[]);
+      getPlans().then((response) => {
+        if (response.data) {
+          const plansFromDB = response.data as PlanInterface[];
+          setPlans(
+            plansFromDB.filter(
+              (plan) =>
+                !plan.isPrivate ||
+                plan.creator === appUser?.userId ||
+                (appUser && plan.attendees.includes(appUser?.userId)),
+            ),
+          );
         }
       });
     }
-  }, [planId]);
+  }, [planId, appUser]);
 
   const sharePlan = (plan: PlanInterface) => {
     const text = `Hi. There is a plan for ${plan.title} on ${moment(plan.startTime).format(
@@ -75,9 +84,12 @@ function PlansList({ planId }: PlansListPropsInterface) {
       });
   };
 
-  const toggleGoing = (planId: string) => {
-    toggleAttendees({ planId }).then((updatedPlan) => {
-      console.log(updatedPlan);
+  const toggleGoing = (checked: boolean, planId: string) => {
+    toggleAttendees({ planId, operation: checked ? 'add' : 'remove' }).then((document) => {
+      if (document.data) {
+        const updatedPlan = document.data as unknown as PlanInterface;
+        setPlans([...plans.filter((plan) => plan.planId != updatedPlan.planId), updatedPlan]);
+      }
     });
   };
 
@@ -135,7 +147,7 @@ function PlansList({ planId }: PlansListPropsInterface) {
                             !plan.attendees?.includes(appUser?.userId) &&
                             plan.maxAttendees >= plan.attendees?.length)
                         }
-                        onChange={() => toggleGoing(plan.planId)}
+                        onChange={(event, checked) => toggleGoing(checked, plan.planId)}
                       />
                     }
                     label='Going?'

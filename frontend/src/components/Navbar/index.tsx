@@ -19,7 +19,7 @@ import useUserStore from '../../store/UserStore';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { appUser, logoutAppUser, fbAccessToken, setFbAccessToken } = useUserStore((state) => ({
+  const { appUser, logoutAppUser, fbAccessToken } = useUserStore((state) => ({
     appUser: state.appUser,
     logoutAppUser: state.logoutAppUser,
     fbAccessToken: state.fbAccessToken,
@@ -39,7 +39,6 @@ const Navbar = () => {
     signOut(firebaseAuth)
       .then(() => {
         logoutAppUser();
-        setFbAccessToken(undefined);
       })
       .catch((error) => {
         console.error(error);

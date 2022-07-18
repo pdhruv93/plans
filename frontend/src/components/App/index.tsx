@@ -7,25 +7,35 @@ import { ThemeProvider } from '@mui/material/styles';
 import { ToastContainer } from 'react-toastify';
 import { UserInterface } from '../../interfaces';
 import { darkTheme } from '../../theme';
-import { firebaseApp } from '../../firebase';
+import { firebaseAuth } from '../../firebase';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useEffect } from 'react';
 import AppRoutes from '../../routes';
-import useUsersStore from '../../store/UsersStore';
+import useUserStore from '../../store/UserStore';
 
 function App() {
-  const { setUsers } = useUsersStore((state) => ({
+  const { setUsers, addAppUser } = useUserStore((state) => ({
     setUsers: state.setUsers,
+    addAppUser: state.addAppUser,
   }));
 
   const getUsers = httpsCallable(getFunctions(), 'getUsers');
 
   useEffect(() => {
-    getUsers().then((result) => {
-      if (result.data) {
-        setUsers(result.data as UserInterface[]);
+    const populateUsers = async () => {
+      const response = await getUsers();
+      if (response.data) {
+        const users = response.data as UserInterface[];
+        setUsers(users);
+
+        const loggedInUser = users.find((user) => user.userId === firebaseAuth.currentUser?.uid);
+        if (loggedInUser) {
+          addAppUser(loggedInUser);
+        }
       }
-    });
+    };
+
+    populateUsers();
   }, []);
 
   return (

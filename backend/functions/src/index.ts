@@ -1,7 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { createUser } from './createUser';
-import { toggleAttendeesInDB } from './toggleAttendeesInDB';
 
 admin.initializeApp();
 
@@ -43,14 +42,15 @@ export const getPlan = functions.https.onCall((data) => {
     .collection('plans')
     .doc(data.planId)
     .get()
-    .then((snapshot) => snapshot.data());
+    .then((snapshot) => ({
+      planId: snapshot.id,
+      ...snapshot.data(),
+    }));
 });
 
 // get plans from DB
 export const getPlans = functions.https.onCall((_, context) => {
-  const userId: string | undefined = context.auth?.uid;
-
-  if (userId) {
+  if (context.auth) {
     // user is logged in, return: all plans
     return admin
       .firestore()
@@ -82,13 +82,26 @@ export const getPlans = functions.https.onCall((_, context) => {
 export const toggleAttendees = functions.https.onCall(async (data, context) => {
   const userId: string | undefined = context.auth?.uid;
   const planId: string = data.planId;
+  const operation: 'add' | 'remove' = data.operation;
 
-  await toggleAttendeesInDB(userId, planId);
+  await admin
+    .firestore()
+    .collection('plans')
+    .doc(planId)
+    .update({
+      attendees:
+        operation === 'remove'
+          ? admin.firestore.FieldValue.arrayRemove(userId)
+          : admin.firestore.FieldValue.arrayUnion(userId),
+    });
 
   return admin
     .firestore()
     .collection('plans')
     .doc(planId)
     .get()
-    .then((snapshot) => snapshot.data());
+    .then((snapshot) => ({
+      planId: snapshot.id,
+      ...snapshot.data(),
+    }));
 });

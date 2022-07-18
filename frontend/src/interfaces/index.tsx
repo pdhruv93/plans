@@ -43,15 +43,12 @@ export interface UserInterface {
 
 export interface UserStoreInterface {
   appUser: UserInterface | null;
+  users: UserInterface[];
   fbAccessToken: string | undefined;
   addAppUser: (userDetails: UserInterface) => void;
   setFbAccessToken: (token: string | undefined) => void;
-  logoutAppUser: () => void;
-}
-
-export interface UsersStoreInterface {
-  users: UserInterface[];
   setUsers: (users: UserInterface[]) => void;
+  logoutAppUser: () => void;
 }
 
 export interface PlansListPropsInterface {
