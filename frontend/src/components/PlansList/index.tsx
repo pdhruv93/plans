@@ -1,13 +1,14 @@
 import { PlanInterface, PlansListPropsInterface } from '../../interfaces';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import CircularProgress from '@mui/material/CircularProgress';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -30,6 +31,7 @@ function PlansList({ planId }: PlansListPropsInterface) {
     plans: state.plans,
     setPlans: state.setPlans,
   }));
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const getPlans = httpsCallable(getFunctions(), 'getPlans');
   const getPlan = httpsCallable(getFunctions(), 'getPlan');
   const deletePlan = httpsCallable(getFunctions(), 'deletePlan');
@@ -86,11 +88,13 @@ function PlansList({ planId }: PlansListPropsInterface) {
   };
 
   const toggleGoing = (checked: boolean, planId: string) => {
+    setIsLoading(true);
     toggleAttendees({ planId, operation: checked ? 'add' : 'remove' }).then((document) => {
       if (document.data) {
         const updatedPlan = document.data as unknown as PlanInterface;
         setPlans([...plans.filter((plan) => plan.planId != updatedPlan.planId), updatedPlan]);
       }
+      setIsLoading(false);
     });
   };
 
@@ -140,25 +144,29 @@ function PlansList({ planId }: PlansListPropsInterface) {
                 </AvatarGroup>
               </CardContent>
               <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <FormGroup>
-                  <FormControlLabel
-                    labelPlacement='start'
-                    control={
-                      <Switch
-                        checked={appUser ? plan.attendees?.includes(appUser?.userId) : false}
-                        disabled={
-                          appUser === null ||
-                          plan.creator === appUser?.userId ||
-                          (appUser != null &&
-                            !plan.attendees?.includes(appUser?.userId) &&
-                            plan.attendees?.length >= plan.maxAttendees)
-                        }
-                        onChange={(event, checked) => toggleGoing(checked, plan.planId)}
-                      />
-                    }
-                    label='Going?'
-                  />
-                </FormGroup>
+                {isLoading ? (
+                  <CircularProgress />
+                ) : (
+                  <FormGroup>
+                    <FormControlLabel
+                      labelPlacement='start'
+                      control={
+                        <Switch
+                          checked={appUser ? plan.attendees?.includes(appUser?.userId) : false}
+                          disabled={
+                            appUser === null ||
+                            plan.creator === appUser?.userId ||
+                            (appUser != null &&
+                              !plan.attendees?.includes(appUser?.userId) &&
+                              plan.attendees?.length >= plan.maxAttendees)
+                          }
+                          onChange={(event, checked) => toggleGoing(checked, plan.planId)}
+                        />
+                      }
+                      label='Going?'
+                    />
+                  </FormGroup>
+                )}
 
                 <Box>
                   <IconButton aria-label='share' onClick={() => sharePlan(plan)}>
