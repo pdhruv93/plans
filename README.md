@@ -26,6 +26,14 @@ firebase deploy --only functions
 ### Deploy only rules
 firebase deploy --only firestore:rules
 
+### Hosting
+If your firebase app is initialized outside of react app, build the react app separately using
+npm run build
+
+Then manually copy the public and build folders to firebase app.
+firebase deploy
+
+
 
 ### Google OAuth(One Tap Signin) with MongoDB Atlas
 https://www.mongodb.com/docs/atlas/app-services/authentication/google/

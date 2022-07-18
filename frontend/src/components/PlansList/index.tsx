@@ -63,8 +63,8 @@ function PlansList({ planId }: PlansListPropsInterface) {
   const sharePlan = (plan: PlanInterface) => {
     const text = `Hi. There is a plan for ${plan.title} on ${moment(plan.startTime).format(
       'DD.MM.YYYY HH:mm',
-    )} (Duration: ${plan.duration}h). Mark your presence here: http://localhost:3000/${
-      plan.planId
+    )} (Duration: ${plan.duration}h). Mark your presence here: ${
+      window.location.href + plan.planId
     }. Location: https://maps.google.com/?q=${plan.location.coordinates.lat},${
       plan.location.coordinates.lng
     }
