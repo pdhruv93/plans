@@ -63,6 +63,7 @@ export default function Form() {
       },
       charges: values.charges,
       otherDetails: values.otherDetails,
+      maxAttendees: values.maxAttendees,
     })
       .then((plan) => {
         toast('Plan created successfully!');

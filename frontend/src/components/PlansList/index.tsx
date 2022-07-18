@@ -15,6 +15,7 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import ShareIcon from '@mui/icons-material/Share';
 import Switch from '@mui/material/Switch';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import usePlansStore from '../../store/PlansStore';
@@ -101,34 +102,39 @@ function PlansList({ planId }: PlansListPropsInterface) {
             <Card sx={{ minWidth: 275 }}>
               <CardContent>
                 <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
-                  {`${moment(plan.startTime).format('DD.MM.YYYY HH:mm')} (${plan.duration}h)`}
+                  {moment(plan.startTime).format('DD.MM.YYYY HH:mm')}
                 </Typography>
+
                 <Typography variant='h5' component='div'>
                   {plan.title}
                 </Typography>
+
                 <Typography color='text.secondary'>
-                  {plan.isPrivate ? 'Private' : 'Public'}
+                  {`${plan.charges}€ for ${plan.duration}h (${
+                    plan.isPrivate ? 'Private' : 'Public'
+                  } Plan)`}
                 </Typography>
+
                 <Typography color='text.secondary'>
-                  {`${plan.charges}€ for entire duration`}
+                  {`Filled: ${plan.attendees.length || 0}/${plan.maxAttendees}`}
                 </Typography>
-                {plan.maxAttendees && (
-                  <Typography color='text.secondary'>
-                    {`Max attendees limit: ${plan.maxAttendees}`}
-                  </Typography>
-                )}
 
                 <Typography variant='body2'>{plan.otherDetails}</Typography>
 
-                <AvatarGroup total={plan.maxAttendees}>
+                <AvatarGroup total={plan.attendees.length || 0}>
                   {plan.attendees?.map((attendee) => {
                     const matchedUser = users.find((user) => user.userId === attendee);
                     return (
-                      <Avatar
+                      <Tooltip
                         key={`plan-${plan.planId}-attendee-${attendee}`}
-                        alt={matchedUser?.name}
-                        src={matchedUser?.photoURL}
-                      />
+                        title={matchedUser?.name || ''}
+                        enterTouchDelay={0}
+                      >
+                        <Avatar
+                          alt={matchedUser?.name}
+                          src={`${matchedUser?.photoURL}?access_token=${process.env.REACT_APP_FB_ACCESS_TOKEN}`}
+                        />
+                      </Tooltip>
                     );
                   })}
                 </AvatarGroup>
@@ -145,7 +151,7 @@ function PlansList({ planId }: PlansListPropsInterface) {
                           plan.creator === appUser?.userId ||
                           (appUser != null &&
                             !plan.attendees?.includes(appUser?.userId) &&
-                            plan.maxAttendees >= plan.attendees?.length)
+                            plan.attendees?.length >= plan.maxAttendees)
                         }
                         onChange={(event, checked) => toggleGoing(checked, plan.planId)}
                       />

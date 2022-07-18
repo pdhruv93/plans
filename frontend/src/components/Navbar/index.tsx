@@ -19,11 +19,9 @@ import useUserStore from '../../store/UserStore';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { appUser, logoutAppUser, fbAccessToken } = useUserStore((state) => ({
+  const { appUser, logoutAppUser } = useUserStore((state) => ({
     appUser: state.appUser,
     logoutAppUser: state.logoutAppUser,
-    fbAccessToken: state.fbAccessToken,
-    setFbAccessToken: state.setFbAccessToken,
   }));
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -61,7 +59,7 @@ const Navbar = () => {
                   <IconButton sx={{ p: 0 }} onClick={handleOpenUserMenu}>
                     <Avatar
                       alt={appUser.name}
-                      src={`${appUser.photoURL}?access_token=${fbAccessToken}`}
+                      src={`${appUser.photoURL}?access_token=${process.env.REACT_APP_FB_ACCESS_TOKEN}`}
                     />
                   </IconButton>
                 </Tooltip>

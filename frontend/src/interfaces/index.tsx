@@ -44,9 +44,7 @@ export interface UserInterface {
 export interface UserStoreInterface {
   appUser: UserInterface | null;
   users: UserInterface[];
-  fbAccessToken: string | undefined;
   addAppUser: (userDetails: UserInterface) => void;
-  setFbAccessToken: (token: string | undefined) => void;
   setUsers: (users: UserInterface[]) => void;
   logoutAppUser: () => void;
 }
