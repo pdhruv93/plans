@@ -87,16 +87,17 @@ function PlansList({ planId }: PlansListPropsInterface) {
       });
   };
 
-  const toggleGoing = (checked: boolean, planId: string) => {
-    setIsLoading(true);
-    toggleAttendees({ planId, operation: checked ? 'add' : 'remove' }).then((document) => {
-      if (document.data) {
-        const updatedPlan = document.data as unknown as PlanInterface;
-        setPlans([...plans.filter((plan) => plan.planId != updatedPlan.planId), updatedPlan]);
-      }
-      setIsLoading(false);
-    });
-  };
+  const toggleGoing =
+    (planId: string) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      setIsLoading(true);
+      toggleAttendees({ planId, operation: checked ? 'add' : 'remove' }).then((document) => {
+        if (document.data) {
+          const updatedPlan = document.data as unknown as PlanInterface;
+          setPlans([...plans.filter((plan) => plan.planId != updatedPlan.planId), updatedPlan]);
+        }
+        setIsLoading(false);
+      });
+    };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -160,7 +161,7 @@ function PlansList({ planId }: PlansListPropsInterface) {
                               !plan.attendees?.includes(appUser?.userId) &&
                               plan.attendees?.length >= plan.maxAttendees)
                           }
-                          onChange={(event, checked) => toggleGoing(checked, plan.planId)}
+                          onChange={toggleGoing(plan.planId)}
                         />
                       }
                       label='Going?'
