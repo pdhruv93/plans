@@ -57,10 +57,7 @@ const Navbar = () => {
               <>
                 <Tooltip title='Open settings'>
                   <IconButton sx={{ p: 0 }} onClick={handleOpenUserMenu}>
-                    <Avatar
-                      alt={appUser.name}
-                      src={`${appUser.photoURL}?access_token=${process.env.REACT_APP_FB_ACCESS_TOKEN}`}
-                    />
+                    <Avatar alt={appUser.name} src={appUser.photoURL} />
                   </IconButton>
                 </Tooltip>
                 <Menu

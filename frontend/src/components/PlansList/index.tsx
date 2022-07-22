@@ -135,10 +135,7 @@ function PlansList({ planId }: PlansListPropsInterface) {
                         title={matchedUser?.name || ''}
                         enterTouchDelay={0}
                       >
-                        <Avatar
-                          alt={matchedUser?.name}
-                          src={`${matchedUser?.photoURL}?access_token=${process.env.REACT_APP_FB_ACCESS_TOKEN}`}
-                        />
+                        <Avatar alt={matchedUser?.name} src={matchedUser?.photoURL} />
                       </Tooltip>
                     );
                   })}
