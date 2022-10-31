@@ -1,0 +1,11 @@
+.faqContainer {
+  display: flex;
+}
+
+.image {
+  height: 11rem;
+}
+
+.title {
+  font-weight: bold;
+}

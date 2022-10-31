@@ -8,7 +8,7 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
-import LoginButtons from '../../components/LoginButtons';
+import LoginModal from '../LoginModal';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
@@ -45,11 +45,11 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position='sticky' className={styles.container}>
+    <AppBar position='static' className={styles.container}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters className={styles.toolbar}>
-          <Typography variant='h5' className={styles.brand} onClick={() => navigate('/')}>
-            PLANS
+          <Typography variant='h4' className={styles.brand} onClick={() => navigate('/')}>
+            plans
           </Typography>
 
           <Box className={styles.userProfileDetails}>
@@ -83,7 +83,7 @@ const Navbar = () => {
                 </Menu>
               </>
             ) : (
-              <LoginButtons />
+              <LoginModal />
             )}
           </Box>
         </Toolbar>

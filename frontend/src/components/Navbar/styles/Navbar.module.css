@@ -1,8 +1,13 @@
+.container {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 .toolbar {
   justify-content: space-between;
 }
 
 .brand {
-  font-family: 'Rammetto One', cursive !important;
-  letter-spacing: 8px !important;
+  font-family: 'Fasthand', cursive !important;
+  color: #3f51b5;
 }

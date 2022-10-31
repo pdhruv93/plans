@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.description {
+  text-align: center;
+  max-width: 21rem;
+}
+
+.illustrationsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.illustration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}
+
+.description {
+  text-align: center;
+}
+
+.title {
+  font-weight: bold;
+  --tw-text-opacity: 1;
+  color: rgb(0 130 148 / var(--tw-text-opacity));
+}
+
+.image {
+  height: 7rem;
+}

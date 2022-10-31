@@ -2,6 +2,7 @@ import { PlanInterface, PlansListPropsInterface } from '../../interfaces';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
+import AddParticipantModal from '../AddParticipantModal';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Box from '@mui/material/Box';
@@ -103,7 +104,7 @@ function PlansList({ planId }: PlansListPropsInterface) {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         {plans.map((plan) => (
-          <Grid key={`plan-${plan.planId}`} item md={3} xs={12}>
+          <Grid key={`plan-${plan.planId}`} item lg={4} md={4} xs={12}>
             <Card sx={{ minWidth: 275 }}>
               <CardContent>
                 <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
@@ -135,7 +136,11 @@ function PlansList({ planId }: PlansListPropsInterface) {
                         title={matchedUser?.name || ''}
                         enterTouchDelay={0}
                       >
-                        <Avatar alt={matchedUser?.name} src={matchedUser?.photoURL} />
+                        <Avatar
+                          sx={{ width: '29px', height: '29px' }}
+                          alt={matchedUser?.name}
+                          src={matchedUser?.photoURL}
+                        />
                       </Tooltip>
                     );
                   })}
@@ -166,13 +171,15 @@ function PlansList({ planId }: PlansListPropsInterface) {
                   </FormGroup>
                 )}
 
-                <Box>
+                <Box sx={{ display: 'flex' }}>
                   <IconButton aria-label='share' onClick={() => sharePlan(plan)}>
                     <ShareIcon />
                   </IconButton>
 
+                  {appUser?.userId === plan.creator && <AddParticipantModal />}
+
                   {appUser?.userId === plan.creator && (
-                    <IconButton aria-label='share' onClick={() => deletePlanFromDB(plan.planId)}>
+                    <IconButton aria-label='delete' onClick={() => deletePlanFromDB(plan.planId)}>
                       <DeleteIcon />
                     </IconButton>
                   )}

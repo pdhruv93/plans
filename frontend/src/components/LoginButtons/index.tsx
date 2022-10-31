@@ -2,9 +2,9 @@ import { FacebookAuthProvider, GoogleAuthProvider, signInWithPopup } from 'fireb
 import { UserInterface } from '../../interfaces';
 import { firebaseAuth } from '../../firebase';
 import { toast } from 'react-toastify';
+import Button from '@mui/material/Button';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
-import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import useUserStore from '../../store/UserStore';
 
@@ -44,14 +44,18 @@ export default function LoginButtons() {
   };
 
   return (
-    <Stack direction='row' spacing={1}>
-      <IconButton aria-label='Google Login' onClick={() => handleLogin('google')}>
-        <GoogleIcon />
-      </IconButton>
+    <Stack spacing={2} mt={4}>
+      <Button variant='outlined' startIcon={<GoogleIcon />} onClick={() => handleLogin('google')}>
+        Login with Google
+      </Button>
 
-      <IconButton aria-label='Facebook Login' onClick={() => handleLogin('facebook')}>
-        <FacebookIcon />
-      </IconButton>
+      <Button
+        variant='outlined'
+        startIcon={<FacebookIcon />}
+        onClick={() => handleLogin('facebook')}
+      >
+        Login with Facebook
+      </Button>
     </Stack>
   );
 }
