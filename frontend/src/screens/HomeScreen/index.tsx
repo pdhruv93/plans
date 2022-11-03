@@ -5,16 +5,13 @@ import HowItWorks from '../../components/HowItWorks';
 import Navbar from '../../components/Navbar';
 import PlanCreatorDrawer from '../../components/PlanCreatorDrawer';
 import PlansList from '../../components/PlansList';
-import PlansSkeleton from '../../components/PlansSkeleton';
 import Typography from '@mui/material/Typography';
 import styles from './styles/HomeScreen.module.css';
-import usePlansStore from '../../store/PlansStore';
 import useUserStore from '../../store/UserStore';
 
 function HomeScreen() {
   const { planId } = useParams();
   const { appUser } = useUserStore((state) => ({ appUser: state.appUser }));
-  const { plans } = usePlansStore((state) => ({ plans: state.plans }));
 
   return (
     <Box>
@@ -26,7 +23,6 @@ function HomeScreen() {
           Upcoming {appUser ? '' : 'Public'} plans
         </Typography>
 
-        {plans.length === 0 && <PlansSkeleton />}
         <PlansList planId={planId} />
 
         <FAQ />

@@ -2,9 +2,9 @@ import * as yup from 'yup';
 import { Autocomplete } from '@react-google-maps/api';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Formik } from 'formik';
-import { PlanFormInterface, PlanInterface } from '../../interfaces';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { toast } from 'react-toastify';
+import { PlanFormType } from './types';
+import { PlanType } from '../../types';
+import { useAddPlan } from '../../queries/usePlansData';
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,18 +13,18 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
+import moment from 'moment';
 import styles from './styles/PlanCreatorDrawer.module.css';
-import usePlansStore from '../../store/PlansStore';
+import useUserStore from '../../store/UserStore';
 
 export default function Form() {
-  const [autoComplete, setAutoComplete] = useState<google.maps.places.Autocomplete | null>(null);
-  const { plans, setPlans } = usePlansStore((state) => ({
-    plans: state.plans,
-    setPlans: state.setPlans,
+  const { appUser } = useUserStore((state) => ({
+    appUser: state.appUser,
   }));
-  const createPlan = httpsCallable(getFunctions(), 'createPlan');
+  const [autoComplete, setAutoComplete] = useState<google.maps.places.Autocomplete | null>(null);
+  const { mutate: addPlan } = useAddPlan();
 
-  const initialValues: PlanFormInterface = {
+  const initialValues: PlanFormType = {
     title: '',
     duration: 0,
     startTime: new Date(),
@@ -51,8 +51,9 @@ export default function Form() {
     maxAttendees: yup.number().required().min(5),
   });
 
-  const onSubmit = async (values: PlanFormInterface) => {
-    createPlan({
+  const onSubmit = async (values: PlanFormType) => {
+    addPlan({
+      creator: appUser?.userId,
       title: values.title,
       duration: values.duration,
       startTime: values.startTime,
@@ -63,16 +64,9 @@ export default function Form() {
       },
       charges: values.charges,
       otherDetails: values.otherDetails,
+      attendees: [appUser?.userId],
       maxAttendees: values.maxAttendees,
-    })
-      .then((plan) => {
-        toast('Plan created successfully!');
-        setPlans([...plans, plan.data as PlanInterface]);
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error('Some error creating Plan...');
-      });
+    } as Omit<PlanType, 'planId'>);
   };
 
   return (
