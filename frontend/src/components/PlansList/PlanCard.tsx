@@ -1,5 +1,7 @@
 import { PlanCardPropsType } from './types';
 import { PlanType } from '../../types';
+import { firebaseAuth } from '../../firebase';
+import { useManageParticipation } from '../../queries/usePlansData';
 import { useUsersData } from '../../queries/useUsersData';
 import AddParticipantModal from '../AddParticipantModal';
 import Avatar from '@mui/material/Avatar';
@@ -14,12 +16,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ShareIcon from '@mui/icons-material/Share';
 import Switch from '@mui/material/Switch';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
-import useUserStore from '../../store/UserStore';
 
 function PlanCard({
   plan,
@@ -28,9 +30,7 @@ function PlanCard({
   participateHandler,
 }: PlanCardPropsType) {
   const { data: users } = useUsersData();
-  const { appUser } = useUserStore((state) => ({
-    appUser: state.appUser,
-  }));
+  const { mutate: manageParticipation } = useManageParticipation();
 
   const sharePlan = (plan: PlanType) => {
     const text = `Hi. There is a plan for ${plan.title} on ${moment(plan.startTime).format(
@@ -81,6 +81,12 @@ function PlanCard({
                     sx={{ width: '29px', height: '29px' }}
                     alt={matchedUser?.name}
                     src={matchedUser?.photoURL}
+                    onClick={() =>
+                      manageParticipation({
+                        plan,
+                        userIdsToRemove: matchedUser ? [matchedUser.userId] : [],
+                      })
+                    }
                   />
                 </Tooltip>
               );
@@ -96,12 +102,16 @@ function PlanCard({
                 labelPlacement='start'
                 control={
                   <Switch
-                    checked={appUser ? plan.attendees?.includes(appUser?.userId) : false}
+                    checked={
+                      firebaseAuth.currentUser
+                        ? plan.attendees?.includes(firebaseAuth.currentUser?.uid)
+                        : false
+                    }
                     disabled={
-                      appUser === null ||
-                      plan.creator === appUser?.userId ||
-                      (appUser != null &&
-                        !plan.attendees?.includes(appUser?.userId) &&
+                      firebaseAuth.currentUser === null ||
+                      plan.creator === firebaseAuth.currentUser?.uid ||
+                      (firebaseAuth.currentUser != null &&
+                        !plan.attendees?.includes(firebaseAuth.currentUser?.uid) &&
                         plan.attendees?.length >= plan.maxAttendees)
                     }
                     onChange={participateHandler(plan)}
@@ -113,13 +123,25 @@ function PlanCard({
           )}
 
           <Box sx={{ display: 'flex' }}>
+            <IconButton
+              aria-label='location'
+              onClick={() =>
+                window.open(
+                  `https://maps.google.com/?q=${plan.location.coordinates.lat},${plan.location.coordinates.lng}`,
+                  '_blank',
+                )
+              }
+            >
+              <LocationOnIcon />
+            </IconButton>
+
             <IconButton aria-label='share' onClick={() => sharePlan(plan)}>
               <ShareIcon />
             </IconButton>
 
-            {appUser?.userId === plan.creator && <AddParticipantModal />}
+            {firebaseAuth.currentUser?.uid === plan.creator && <AddParticipantModal plan={plan} />}
 
-            {appUser?.userId === plan.creator && (
+            {firebaseAuth.currentUser?.uid === plan.creator && (
               <IconButton aria-label='delete' onClick={() => deleteHandler(plan.planId)}>
                 <DeleteIcon />
               </IconButton>

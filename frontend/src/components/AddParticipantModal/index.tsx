@@ -1,3 +1,4 @@
+import { PlanType } from '../../types';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
@@ -7,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import UsersList from './UsersList';
 import styles from './styles/AddParticipantModal.module.css';
 
-export default function AddParticipantModal() {
+export default function AddParticipantModal({ plan }: { plan: PlanType }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -26,12 +27,12 @@ export default function AddParticipantModal() {
       >
         <Box className={styles.modalContainer}>
           <Typography id='modal-modal-title' variant='h4' gutterBottom>
-            Add Participant to plan
+            Add Participants to plan
           </Typography>
           <Typography id='modal-modal-title' mb={3} sx={{ width: '80%', textAlign: 'center' }}>
             User suggestion will only be shown if the user has logged in atleast once
           </Typography>
-          <UsersList />
+          <UsersList plan={plan} />
         </Box>
       </Modal>
     </div>

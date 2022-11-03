@@ -1,3 +1,5 @@
+import { firebaseAuth } from '../../firebase';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import FAQ from '../../components/FAQ';
@@ -7,20 +9,25 @@ import PlanCreatorDrawer from '../../components/PlanCreatorDrawer';
 import PlansList from '../../components/PlansList';
 import Typography from '@mui/material/Typography';
 import styles from './styles/HomeScreen.module.css';
-import useUserStore from '../../store/UserStore';
 
 function HomeScreen() {
   const { planId } = useParams();
-  const { appUser } = useUserStore((state) => ({ appUser: state.appUser }));
+  const [_, setIsUserSignedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const authStateListener = firebaseAuth.onAuthStateChanged((user) => setIsUserSignedIn(!!user));
+    // unsubscribe on component demount
+    return () => authStateListener();
+  }, []);
 
   return (
     <Box>
       <Navbar />
       <Box className={styles.bodyContainer}>
-        {appUser?.roles?.includes('admin') ? <PlanCreatorDrawer /> : <HowItWorks />}
+        {firebaseAuth.currentUser ? <PlanCreatorDrawer /> : <HowItWorks />}
 
         <Typography variant='h4' mb={3} mt={6}>
-          Upcoming {appUser ? '' : 'Public'} plans
+          Upcoming {firebaseAuth.currentUser ? '' : 'Public'} plans
         </Typography>
 
         <PlansList planId={planId} />

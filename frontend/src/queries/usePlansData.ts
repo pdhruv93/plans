@@ -9,7 +9,7 @@ import {
   doc,
   getDoc,
   getDocs,
-  updateDoc,
+  writeBatch,
 } from 'firebase/firestore';
 import { PlanType } from '../types';
 import { db } from '../firebase';
@@ -32,18 +32,21 @@ const addPlan = (plan: Omit<PlanType, 'planId'>): Promise<PlanType> => {
   }).then((docRef) => ({ ...plan, planId: docRef.id }));
 };
 
-const toggleParticipation = ({
+const manageParticipation = ({
   plan,
-  userId,
-  operation,
+  userIdsToAdd = [],
+  userIdsToRemove = [],
 }: {
   plan: PlanType;
-  userId: string;
-  operation: 'add' | 'remove';
+  userIdsToAdd?: string[];
+  userIdsToRemove?: string[];
 }): Promise<PlanType> => {
-  return updateDoc(doc(db, 'plans', plan.planId), {
-    attendees: operation === 'remove' ? arrayRemove(userId) : arrayUnion(userId),
-  }).then(() => {
+  const planRef = doc(db, 'plans', plan.planId);
+  const batch = writeBatch(db);
+  batch.update(planRef, { attendees: arrayUnion(...userIdsToAdd) });
+  batch.update(planRef, { attendees: arrayRemove(...userIdsToRemove) });
+
+  return batch.commit().then(() => {
     return getDoc(doc(db, 'plans', plan.planId) as DocumentReference<PlanType>).then((docSnap) => {
       const updatedPlan = docSnap.data()
         ? { ...(docSnap.data() || plan), planId: docSnap.id }
@@ -92,9 +95,9 @@ export const useAddPlan = () => {
   });
 };
 
-export const useToggleParticipation = () => {
+export const useManageParticipation = () => {
   const queryClient = useQueryClient();
-  return useMutation(toggleParticipation, {
+  return useMutation(manageParticipation, {
     onSuccess: (modifiedPlan: PlanType) => {
       // we only get a plan from .then of toggleParticipation(), otheriwse null or undefined
       modifiedPlan &&
@@ -107,7 +110,7 @@ export const useToggleParticipation = () => {
 
     onError: (error) => {
       console.error('Some error occurred while trying to add plan', error);
-      toast.error('Some error creating plan...');
+      toast.error('Some error occured while marking your presence...');
     },
   });
 };

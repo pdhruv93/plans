@@ -4,6 +4,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Formik } from 'formik';
 import { PlanFormType } from './types';
 import { PlanType } from '../../types';
+import { firebaseAuth } from '../../firebase';
 import { useAddPlan } from '../../queries/usePlansData';
 import { useState } from 'react';
 import Box from '@mui/material/Box';
@@ -13,14 +14,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
-import moment from 'moment';
 import styles from './styles/PlanCreatorDrawer.module.css';
-import useUserStore from '../../store/UserStore';
 
 export default function Form() {
-  const { appUser } = useUserStore((state) => ({
-    appUser: state.appUser,
-  }));
   const [autoComplete, setAutoComplete] = useState<google.maps.places.Autocomplete | null>(null);
   const { mutate: addPlan } = useAddPlan();
 
@@ -53,7 +49,7 @@ export default function Form() {
 
   const onSubmit = async (values: PlanFormType) => {
     addPlan({
-      creator: appUser?.userId,
+      creator: firebaseAuth.currentUser?.uid,
       title: values.title,
       duration: values.duration,
       startTime: values.startTime,
@@ -64,7 +60,7 @@ export default function Form() {
       },
       charges: values.charges,
       otherDetails: values.otherDetails,
-      attendees: [appUser?.userId],
+      attendees: [firebaseAuth.currentUser?.uid],
       maxAttendees: values.maxAttendees,
     } as Omit<PlanType, 'planId'>);
   };

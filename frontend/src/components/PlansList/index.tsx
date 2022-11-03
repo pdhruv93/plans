@@ -1,7 +1,8 @@
 import { PlanType } from '../../types';
 import { PlansListPropsType } from './types';
 import { Typography } from '@mui/material';
-import { useDeletePlan, usePlansData, useToggleParticipation } from '../../queries/usePlansData';
+import { firebaseAuth } from '../../firebase';
+import { useDeletePlan, useManageParticipation, usePlansData } from '../../queries/usePlansData';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import NoPlansSVG from '../../assets/illustrations/no_plans.svg';
@@ -9,19 +10,15 @@ import NotFoundSVG from '../../assets/illustrations/not_found.svg';
 import PlanCard from './PlanCard';
 import PlansSkeleton from '../PlansSkeleton';
 import styles from './styles/PlansList.module.css';
-import useUserStore from '../../store/UserStore';
 
 function PlansList({ planId }: PlansListPropsType) {
-  const { appUser } = useUserStore((state) => ({
-    appUser: state.appUser,
-  }));
   const { isLoading, isFetching, data: plans } = usePlansData();
   const { mutate: deletePlan } = useDeletePlan();
   const {
-    mutate: toggleParticipation,
+    mutate: manageParticipation,
     isLoading: isSwitchLoading,
     data: toggledPlan,
-  } = useToggleParticipation();
+  } = useManageParticipation();
 
   const deletePlanFromDB = (planId: string) => {
     deletePlan(planId);
@@ -29,12 +26,16 @@ function PlansList({ planId }: PlansListPropsType) {
 
   const toggleGoing =
     (plan: PlanType) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      appUser &&
-        toggleParticipation({
-          plan,
-          userId: appUser?.userId,
-          operation: checked ? 'add' : 'remove',
-        });
+      firebaseAuth.currentUser &&
+        (checked
+          ? manageParticipation({
+              plan,
+              userIdsToAdd: [firebaseAuth.currentUser.uid],
+            })
+          : manageParticipation({
+              plan,
+              userIdsToRemove: [firebaseAuth.currentUser.uid],
+            }));
     };
 
   if (isLoading || isFetching) {

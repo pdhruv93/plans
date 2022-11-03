@@ -28,6 +28,13 @@ function FAQ() {
             title='Is it mandatory for host to participate?'
             body='As of now, yes. The system by default marks the host as an attendee.'
           />
+
+          <StyledAccordion
+            title='How to add or remove participants to plan?'
+            body='The plan creator has option to add or remove participants. 
+            Of course you can mark your presence once you log in. 
+            If you are a plan creator just click on an avatar to remove the user from plan'
+          />
         </Box>
       </Box>
     </Box>

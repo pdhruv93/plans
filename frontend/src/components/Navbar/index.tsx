@@ -1,6 +1,4 @@
 import { firebaseAuth } from '../../firebase';
-import { signOut } from 'firebase/auth';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -15,14 +13,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import styles from './styles/Navbar.module.css';
-import useUserStore from '../../store/UserStore';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { appUser, logoutAppUser } = useUserStore((state) => ({
-    appUser: state.appUser,
-    logoutAppUser: state.logoutAppUser,
-  }));
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -31,17 +24,6 @@ const Navbar = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-  };
-
-  const handleLogout = () => {
-    signOut(firebaseAuth)
-      .then(() => {
-        logoutAppUser();
-      })
-      .catch((error) => {
-        console.error(error);
-        toast('Logout failed!!');
-      });
   };
 
   return (
@@ -53,11 +35,14 @@ const Navbar = () => {
           </Typography>
 
           <Box className={styles.userProfileDetails}>
-            {appUser ? (
+            {firebaseAuth.currentUser ? (
               <>
                 <Tooltip title='Open settings'>
                   <IconButton sx={{ p: 0 }} onClick={handleOpenUserMenu}>
-                    <Avatar alt={appUser.name} src={appUser.photoURL} />
+                    <Avatar
+                      alt={firebaseAuth.currentUser.displayName || 'User'}
+                      src={firebaseAuth.currentUser.photoURL || ''}
+                    />
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -77,7 +62,7 @@ const Navbar = () => {
                   onClick={handleCloseUserMenu}
                   onClose={handleCloseUserMenu}
                 >
-                  <MenuItem key='logout' onClick={handleLogout}>
+                  <MenuItem key='logout' onClick={() => firebaseAuth.signOut()}>
                     <Typography textAlign='center'>Logout</Typography>
                   </MenuItem>
                 </Menu>

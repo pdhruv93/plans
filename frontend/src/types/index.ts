@@ -20,5 +20,4 @@ export interface UserType {
   name: string;
   email: string;
   photoURL: string;
-  roles?: string[];
 }
