@@ -1,7 +1,7 @@
 import { PlanCardPropsType } from './types';
 import { PlanType } from '../../types';
 import { firebaseAuth } from '../../firebase';
-import { useManageParticipation } from '../../queries/usePlansData';
+import { useManageParticipation } from '../../queries/plans/useManageParticipation';
 import { useUsersData } from '../../queries/useUsersData';
 import AddParticipantModal from '../AddParticipantModal';
 import Avatar from '@mui/material/Avatar';

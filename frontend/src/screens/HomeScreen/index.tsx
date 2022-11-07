@@ -27,7 +27,7 @@ function HomeScreen() {
         {firebaseAuth.currentUser ? <PlanCreatorDrawer /> : <HowItWorks />}
 
         <Typography variant='h4' mb={3} mt={6}>
-          Upcoming {firebaseAuth.currentUser ? '' : 'Public'} plans
+          {planId ? 'Plan Details' : `Upcoming ${firebaseAuth.currentUser ? '' : 'Public'} plans`}
         </Typography>
 
         <PlansList planId={planId} />

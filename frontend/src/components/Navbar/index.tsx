@@ -1,4 +1,5 @@
 import { firebaseAuth } from '../../firebase';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -62,7 +63,13 @@ const Navbar = () => {
                   onClick={handleCloseUserMenu}
                   onClose={handleCloseUserMenu}
                 >
-                  <MenuItem key='logout' onClick={() => firebaseAuth.signOut()}>
+                  <MenuItem
+                    key='logout'
+                    onClick={() => {
+                      toast.dismiss();
+                      firebaseAuth.signOut();
+                    }}
+                  >
                     <Typography textAlign='center'>Logout</Typography>
                   </MenuItem>
                 </Menu>

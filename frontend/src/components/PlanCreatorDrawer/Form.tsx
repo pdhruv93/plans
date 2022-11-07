@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import { PlanFormType } from './types';
 import { PlanType } from '../../types';
 import { firebaseAuth } from '../../firebase';
-import { useAddPlan } from '../../queries/usePlansData';
+import { useAddPlan } from '../../queries/plans/useAddPlan';
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,6 +14,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
+import moment from 'moment';
 import styles from './styles/PlanCreatorDrawer.module.css';
 
 export default function Form() {
@@ -52,7 +53,7 @@ export default function Form() {
       creator: firebaseAuth.currentUser?.uid,
       title: values.title,
       duration: values.duration,
-      startTime: values.startTime,
+      startTime: moment(values.startTime).toDate(),
       isPrivate: values.isPrivate,
       location: {
         name: values.locationName,

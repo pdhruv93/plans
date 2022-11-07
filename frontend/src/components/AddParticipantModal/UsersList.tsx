@@ -1,6 +1,6 @@
 import { PlanType, UserType } from '../../types';
 import { toast } from 'react-toastify';
-import { useManageParticipation } from '../../queries/usePlansData';
+import { useManageParticipation } from '../../queries/plans/useManageParticipation';
 import { useState } from 'react';
 import { useUsersData } from '../../queries/useUsersData';
 import Autocomplete from '@mui/material/Autocomplete';
