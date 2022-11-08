@@ -1,4 +1,3 @@
-import { PlanType } from '../../types';
 import { db } from '../../firebase';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
@@ -11,13 +10,9 @@ const deletePlan = (planId: string): Promise<string> => {
 export const useDeletePlan = () => {
   const queryClient = useQueryClient();
   return useMutation(deletePlan, {
-    onSuccess: (deletedPlanId) => {
-      toast.dismiss();
+    onSuccess: () => {
       toast.success('Plan deleted successfully!!');
-      deletedPlanId &&
-        queryClient.setQueryData(['plans'], (oldData: PlanType[] | undefined) =>
-          oldData?.filter((plan) => plan.planId != deletedPlanId),
-        );
+      queryClient.invalidateQueries(['plans']);
     },
 
     onError: (error) => {

@@ -19,7 +19,7 @@ function App() {
         <ThemeProvider theme={darkTheme}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <AppRoutes />
-            <ToastContainer position='bottom-left' newestOnTop={false} limit={1} />
+            <ToastContainer position='bottom-left' />
           </LocalizationProvider>
         </ThemeProvider>
       </BrowserRouter>

@@ -7,8 +7,9 @@ import { useManageParticipation } from '../../queries/plans/useManageParticipati
 import { usePlanData } from '../../queries/plans/usePlanData';
 import { usePlansData } from '../../queries/plans/usePlansData';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import NoPlansSVG from '../../assets/illustrations/no_plans.svg';
 import NotFoundSVG from '../../assets/illustrations/not_found.svg';
 import PlanCard from './PlanCard';
@@ -81,9 +82,9 @@ function PlansList({ planId }: PlansListPropsType) {
   return data ? (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
-        {data.pages.map((plans, index) => (
+        {data.pages.map((page, index) => (
           <React.Fragment key={index}>
-            {plans.map((plan) => (
+            {page.map((plan) => (
               <PlanCard
                 key={plan.planId}
                 plan={plan}
@@ -96,13 +97,18 @@ function PlansList({ planId }: PlansListPropsType) {
         ))}
       </Grid>
 
-      <Button
-        variant='outlined'
-        disabled={!hasNextPage || isFetchingNextPage}
-        onClick={() => fetchNextPage()}
-      >
-        Load more...
-      </Button>
+      {hasNextPage && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
+          <IconButton
+            aria-label='load-more'
+            size='large'
+            disabled={!hasNextPage || isFetchingNextPage}
+            onClick={() => fetchNextPage()}
+          >
+            <ExpandCircleDownIcon fontSize='inherit' />
+          </IconButton>
+        </Box>
+      )}
     </Box>
   ) : (
     <img src={NotFoundSVG} className={styles.image} alt='Not Found' />

@@ -1,5 +1,6 @@
 import {
   CollectionReference,
+  QueryConstraint,
   Timestamp,
   collection,
   getDocs,
@@ -13,29 +14,23 @@ import { PlanType } from '../../types';
 import { db } from '../../firebase';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-const itemsPerPage = 1;
+const itemsPerPage = 6;
 
 const fetchPlans = ({ pageParam = 1 }): Promise<PlanType[]> => {
   console.log(`Fetching plans from DB for page ${pageParam}.....`);
 
-  /* If pageNumber==1, we don't have starting doc snaphot, so startAt=null */
-  const paginateQuery =
-    pageParam === 1
-      ? query(
-          collection(db, 'plans'),
-          where('startTime', '>', new Date()),
-          orderBy('startTime'),
-          limit(itemsPerPage),
-        )
-      : query(
-          collection(db, 'plans'),
-          where('startTime', '>', new Date()),
-          orderBy('startTime'),
-          startAfter((pageParam as any as PlanType).startTime),
-          limit(itemsPerPage),
-        );
+  const constraints: QueryConstraint[] = [];
+  constraints.push(where('startTime', '>', new Date()));
+  constraints.push(orderBy('startTime'));
 
-  return getDocs(paginateQuery as CollectionReference<PlanType>).then((snapshot) => {
+  /* If pageNumber==1, we don't have starting doc snaphot, so dont pass startAt*/
+  pageParam != 1 && constraints.push(startAfter((pageParam as any as PlanType).startTime));
+
+  constraints.push(limit(itemsPerPage));
+
+  return getDocs(
+    query(collection(db, 'plans'), ...constraints) as CollectionReference<PlanType>,
+  ).then((snapshot) => {
     const plans = snapshot.docs.map((doc) => ({
       ...doc.data(),
       planId: doc.id,
@@ -49,6 +44,7 @@ export const usePlansData = () => {
   return useInfiniteQuery(['plans'], fetchPlans, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
     getNextPageParam: (lastPage, pages) => {
       // computes and returns the next pageNumber which will be passed to fetchPlans()
       /* If the items returned are less than  itemsPerPage, we are on last page 

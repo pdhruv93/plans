@@ -15,9 +15,17 @@ export const useAddPlan = () => {
 
   return useMutation(addPlan, {
     onSuccess: (addedPlan) => {
+      toast.dismiss();
       toast.success('Plan added successfully!!');
       navigate(`/${addedPlan.planId}`);
-      queryClient.invalidateQueries(['plans']);
+
+      // we only get a plan from .then of addPlan(), otherwise null or undefined
+      addedPlan &&
+        queryClient.setQueryData(
+          ['plans'],
+          (oldData: PlanType[] | undefined) => (oldData ? [...oldData, addedPlan] : [addedPlan]),
+          // if old data exists, append plan else return the only plan
+        );
     },
 
     onError: (error) => {

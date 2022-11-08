@@ -6,10 +6,10 @@ import {
   getDoc,
   writeBatch,
 } from 'firebase/firestore';
+import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlanType } from '../../types';
 import { db } from '../../firebase';
 import { toast } from 'react-toastify';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const manageParticipation = ({
   plan,
@@ -42,10 +42,16 @@ export const useManageParticipation = () => {
     onSuccess: (modifiedPlan: PlanType) => {
       // we only get a plan from .then of toggleParticipation(), otheriwse null or undefined
       modifiedPlan &&
-        queryClient.setQueryData(['plans'], (oldData: PlanType[] | undefined) => {
-          return oldData
-            ?.filter((oldPlan) => oldPlan.planId != modifiedPlan.planId)
-            .concat(modifiedPlan);
+        queryClient.setQueryData(['plans'], (oldData: InfiniteData<PlanType[]> | undefined) => {
+          oldData?.pages.map((page) =>
+            page.map((plan) => {
+              if (plan.planId === modifiedPlan.planId) {
+                plan.attendees = modifiedPlan.attendees;
+              }
+            }),
+          );
+
+          return oldData;
         });
     },
 
