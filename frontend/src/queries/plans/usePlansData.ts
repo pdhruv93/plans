@@ -14,7 +14,7 @@ import { PlanType } from '../../types';
 import { db } from '../../firebase';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-const itemsPerPage = 6;
+const itemsPerPage = 1;
 
 const fetchPlans = ({ pageParam = 1 }): Promise<PlanType[]> => {
   console.log(`Fetching plans from DB for page ${pageParam}.....`);

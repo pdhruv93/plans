@@ -7,9 +7,8 @@ import { useManageParticipation } from '../../queries/plans/useManageParticipati
 import { usePlanData } from '../../queries/plans/usePlanData';
 import { usePlansData } from '../../queries/plans/usePlansData';
 import Box from '@mui/material/Box';
-import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import NoPlansSVG from '../../assets/illustrations/no_plans.svg';
 import NotFoundSVG from '../../assets/illustrations/not_found.svg';
 import PlanCard from './PlanCard';
@@ -99,14 +98,15 @@ function PlansList({ planId }: PlansListPropsType) {
 
       {hasNextPage && (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
-          <IconButton
-            aria-label='load-more'
-            size='large'
+          <Link
+            component='button'
+            variant='body2'
+            underline='none'
             disabled={!hasNextPage || isFetchingNextPage}
             onClick={() => fetchNextPage()}
           >
-            <ExpandCircleDownIcon fontSize='inherit' />
-          </IconButton>
+            Load more...
+          </Link>
         </Box>
       )}
     </Box>

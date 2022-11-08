@@ -44,6 +44,14 @@ function PlanCard({
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
 
+  if (
+    plan.isPrivate &&
+    (!firebaseAuth.currentUser || !plan.attendees.includes(firebaseAuth.currentUser.uid))
+  ) {
+    // don't show private plan if user is not logged in or if user is not in attendees
+    return null;
+  }
+
   return (
     <Grid key={`plan-${plan.planId}`} item lg={4} md={4} xs={12}>
       <Card sx={{ minWidth: 275 }}>
