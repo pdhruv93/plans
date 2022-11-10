@@ -22,9 +22,9 @@ export default function UsersList({ plan }: { plan: PlanType }) {
         getOptionLabel={(option) => `${option.name} (${option.email})`}
         isOptionEqualToValue={(option, value) => option.email === value.email}
         renderInput={(params) => (
-          <TextField {...params} label='Type name to select' placeholder='more entries' />
+          <TextField {...params} fullWidth label='Type name to select' placeholder='more entries' />
         )}
-        sx={{ width: '500px' }}
+        sx={{ width: '100%' }}
         onChange={(event, value) => setSelectedUsers(value)}
       />
 

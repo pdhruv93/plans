@@ -1,19 +1,24 @@
+import { Theme } from '@mui/system';
 import Box from '@mui/material/Box';
 import FaqSVG from '../../assets/illustrations/faq.svg';
+import Stack from '@mui/material/Stack';
 import StyledAccordion from './StyledAccordion';
 import Typography from '@mui/material/Typography';
-import styles from './styles/HowItWorks.module.css';
+import styles from './styles/FAQ.module.css';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function FAQ() {
+  const largeScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
+
   return (
-    <Box mt={8}>
+    <Stack direction={largeScreen ? 'row' : 'column'} spacing={3}>
       <Typography variant='h4' gutterBottom>
         FAQ
       </Typography>
 
-      <Box className={styles.faqContainer}>
+      <Stack direction={largeScreen ? 'row' : 'column'} spacing={3}>
         <img src={FaqSVG} className={styles.image} alt='FAQ' />
-        <Box ml={4} sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%' }}>
           <StyledAccordion
             title='How can one see private plans?'
             body='Private plans are only shown if you have direct link or are in attendees list'
@@ -36,8 +41,8 @@ function FAQ() {
             If you are a plan creator just click on an avatar to remove the user from plan'
           />
         </Box>
-      </Box>
-    </Box>
+      </Stack>
+    </Stack>
   );
 }
 

@@ -44,7 +44,6 @@ export const usePlansData = () => {
   return useInfiniteQuery(['plans'], fetchPlans, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    keepPreviousData: true,
     getNextPageParam: (lastPage, pages) => {
       // computes and returns the next pageNumber which will be passed to fetchPlans()
       /* If the items returned are less than  itemsPerPage, we are on last page 
