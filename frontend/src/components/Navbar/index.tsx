@@ -28,7 +28,7 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position='static' className={styles.container}>
+    <AppBar position='sticky' className={styles.container}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters className={styles.toolbar}>
           <Typography variant='h4' className={styles.brand} onClick={() => navigate('/')}>

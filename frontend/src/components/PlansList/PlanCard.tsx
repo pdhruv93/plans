@@ -90,6 +90,9 @@ function PlanCard({
                     alt={matchedUser?.name}
                     src={matchedUser?.photoURL}
                     onClick={() =>
+                      firebaseAuth.currentUser &&
+                      plan.creator === firebaseAuth.currentUser.uid &&
+                      matchedUser?.userId != plan.creator &&
                       manageParticipation({
                         plan,
                         userIdsToRemove: matchedUser ? [matchedUser.userId] : [],

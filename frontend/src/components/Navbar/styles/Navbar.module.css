@@ -1,6 +1,5 @@
 .container {
-  background: transparent !important;
-  box-shadow: none !important;
+  background: white !important;
 }
 
 .toolbar {
@@ -8,6 +7,7 @@
 }
 
 .brand {
-  font-family: 'Fasthand', cursive !important;
+  font-family: 'Comfortaa', cursive !important;
   color: #3f51b5;
+  cursor: pointer;
 }

@@ -45,7 +45,7 @@ export default function LoginButtons() {
   return (
     <Stack spacing={2} mt={4}>
       <Button variant='outlined' startIcon={<GoogleIcon />} onClick={() => handleLogin('google')}>
-        Login with Google
+        Google
       </Button>
 
       <Button
@@ -53,7 +53,7 @@ export default function LoginButtons() {
         startIcon={<FacebookIcon />}
         onClick={() => handleLogin('facebook')}
       >
-        Login with Facebook
+        Facebook
       </Button>
     </Stack>
   );
