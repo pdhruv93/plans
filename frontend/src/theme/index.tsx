@@ -6,4 +6,11 @@ export const darkTheme = createTheme({
     primary: indigo,
     secondary: pink,
   },
+  typography: {
+    fontFamily: 'Open Sans',
+    fontSize: 14,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+  },
 });
