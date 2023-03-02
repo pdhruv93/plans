@@ -59,50 +59,56 @@ function PlanCard({
           <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
             {moment(plan.startTime).format('DD.MM.YYYY HH:mm')}
           </Typography>
-
           <Typography variant='h5' component='div'>
             {plan.title}
           </Typography>
-
-          <Typography color='text.secondary'>
+          <Typography sx={{ fontWeight: '600' }} color='text.secondary'>
             {`${plan.charges}€ for ${plan.duration}h (${
               plan.isPrivate ? 'Private' : 'Public'
             } Plan)`}
           </Typography>
-
-          <Typography color='text.secondary'>
-            {`Filled: ${plan.attendees?.length || 0}/${plan.maxAttendees}`}
-          </Typography>
-
           <Typography variant='body2'>{plan.otherDetails}</Typography>
 
-          <AvatarGroup total={plan.attendees?.length || 0}>
-            {plan.attendees?.map((attendee) => {
-              const matchedUser = users?.find((user) => user.userId === attendee);
-              return (
-                <Tooltip
-                  key={`plan-${plan.planId}-attendee-${attendee}`}
-                  title={matchedUser?.name || ''}
-                  enterTouchDelay={0}
-                >
-                  <Avatar
-                    sx={{ width: '29px', height: '29px' }}
-                    alt={matchedUser?.name}
-                    src={matchedUser?.photoURL}
-                    onClick={() =>
-                      firebaseAuth.currentUser &&
-                      plan.creator === firebaseAuth.currentUser.uid &&
-                      matchedUser?.userId != plan.creator &&
-                      manageParticipation({
-                        plan,
-                        userIdsToRemove: matchedUser ? [matchedUser.userId] : [],
-                      })
-                    }
-                  />
-                </Tooltip>
-              );
-            })}
-          </AvatarGroup>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginTop: 1,
+            }}
+          >
+            <Typography variant='button' color='text.secondary'>
+              {`Filled spots: ${plan.attendees?.length || 0}/${plan.maxAttendees}`}
+            </Typography>
+
+            <AvatarGroup total={plan.attendees?.length || 0}>
+              {plan.attendees?.map((attendee) => {
+                const matchedUser = users?.find((user) => user.userId === attendee);
+                return (
+                  <Tooltip
+                    key={`plan-${plan.planId}-attendee-${attendee}`}
+                    title={matchedUser?.name || ''}
+                    enterTouchDelay={0}
+                  >
+                    <Avatar
+                      sx={{ width: '29px', height: '29px' }}
+                      alt={matchedUser?.name}
+                      src={matchedUser?.photoURL}
+                      onClick={() =>
+                        firebaseAuth.currentUser &&
+                        plan.creator === firebaseAuth.currentUser.uid &&
+                        matchedUser?.userId != plan.creator &&
+                        manageParticipation({
+                          plan,
+                          userIdsToRemove: matchedUser ? [matchedUser.userId] : [],
+                        })
+                      }
+                    />
+                  </Tooltip>
+                );
+              })}
+            </AvatarGroup>
+          </Box>
         </CardContent>
         <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
           {updateInProgress ? (
@@ -128,7 +134,7 @@ function PlanCard({
                     onChange={participateHandler(plan)}
                   />
                 }
-                label='Going?'
+                label='Are you going?'
               />
             </FormGroup>
           )}

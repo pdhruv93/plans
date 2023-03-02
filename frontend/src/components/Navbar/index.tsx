@@ -7,7 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
-import LoginModal from '../LoginModal';
+import LoginButtons from '../LoginButtons';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
@@ -75,7 +75,7 @@ const Navbar = () => {
                 </Menu>
               </>
             ) : (
-              <LoginModal />
+              <LoginButtons />
             )}
           </Box>
         </Toolbar>

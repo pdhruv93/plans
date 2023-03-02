@@ -75,6 +75,11 @@ export default function FAQ(): JSX.Element {
             Of course you can mark your presence once you log in. 
             If you are a plan creator just click on an avatar to remove the user from plan'
                 />
+
+                <StyledAccordion
+                  title='How to add user who has not logged in yet?'
+                  body='You cannot add anonymous users as of now. But this feature is releasing soon.'
+                />
               </Box>
             </Stack>
           </Stack>

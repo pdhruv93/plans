@@ -9,9 +9,9 @@ import { firebaseAuth } from '../../firebase';
 import { toast } from 'react-toastify';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUsersData } from '../../queries/useUsersData';
-import Button from '@mui/material/Button';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
+import IconButton from '@mui/material/IconButton/IconButton';
 import Stack from '@mui/material/Stack';
 
 export default function LoginButtons() {
@@ -43,18 +43,26 @@ export default function LoginButtons() {
   };
 
   return (
-    <Stack spacing={2} mt={4}>
-      <Button variant='outlined' startIcon={<GoogleIcon />} onClick={() => handleLogin('google')}>
-        Google
-      </Button>
+    <Stack direction='row' spacing={1}>
+      <IconButton
+        color='primary'
+        aria-label='google login'
+        component='label'
+        size='large'
+        onClick={() => handleLogin('google')}
+      >
+        <GoogleIcon />
+      </IconButton>
 
-      <Button
-        variant='outlined'
-        startIcon={<FacebookIcon />}
+      <IconButton
+        color='primary'
+        aria-label='facebook login'
+        component='label'
+        size='large'
         onClick={() => handleLogin('facebook')}
       >
-        Facebook
-      </Button>
+        <FacebookIcon />
+      </IconButton>
     </Stack>
   );
 }
