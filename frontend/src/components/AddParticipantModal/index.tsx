@@ -15,7 +15,11 @@ export default function AddParticipantModal({ plan }: { plan: PlanType }) {
 
   return (
     <div>
-      <IconButton aria-label='share' onClick={handleOpen}>
+      <IconButton
+        aria-label='share'
+        onClick={handleOpen}
+        disabled={plan.attendees?.length >= plan.maxAttendees}
+      >
         <PersonAddIcon />
       </IconButton>
 
@@ -29,8 +33,11 @@ export default function AddParticipantModal({ plan }: { plan: PlanType }) {
           <Typography id='modal-modal-title' variant='h4' gutterBottom>
             Add Participants to plan
           </Typography>
+          <Typography id='modal-modal-title' sx={{ width: '80%', textAlign: 'center' }}>
+            User suggestion will only be shown if the user has logged in atleast once.
+          </Typography>
           <Typography id='modal-modal-title' mb={3} sx={{ width: '80%', textAlign: 'center' }}>
-            User suggestion will only be shown if the user has logged in atleast once
+            Cannot find the user? Do +1 to add anonymous participants.
           </Typography>
           <UsersList plan={plan} />
         </Box>

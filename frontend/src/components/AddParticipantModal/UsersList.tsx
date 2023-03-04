@@ -1,10 +1,12 @@
 import { PlanType, UserType } from '../../types';
+import { firebaseAuth } from '../../firebase';
 import { toast } from 'react-toastify';
 import { useManageParticipation } from '../../queries/plans/useManageParticipation';
 import { useState } from 'react';
 import { useUsersData } from '../../queries/useUsersData';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 
 export default function UsersList({ plan }: { plan: PlanType }) {
@@ -28,21 +30,42 @@ export default function UsersList({ plan }: { plan: PlanType }) {
         onChange={(event, value) => setSelectedUsers(value)}
       />
 
-      <Button
-        variant='contained'
-        style={{ marginTop: 15 }}
-        disabled={selectedUsers.length <= 0}
-        onClick={() => {
-          manageParticipation({
-            plan,
-            userIdsToAdd: selectedUsers.map((user) => user.userId),
-          });
+      <Stack direction='row' spacing={1} style={{ marginTop: 15 }}>
+        <Button
+          variant='contained'
+          disabled={selectedUsers.length <= 0 || plan.attendees?.length >= plan.maxAttendees}
+          onClick={() => {
+            manageParticipation({
+              plan,
+              userIdsToAdd: selectedUsers.map((user) => user.userId),
+            });
 
-          toast.success(`Successfully added ${selectedUsers.length} participant to plan!!`);
-        }}
-      >
-        Add participants
-      </Button>
+            toast.success(`Successfully added ${selectedUsers.length} participant to plan!!`);
+          }}
+        >
+          Add participants
+        </Button>
+
+        <Button
+          variant='contained'
+          color='primary'
+          disabled={plan.attendees?.length >= plan.maxAttendees}
+          onClick={() => {
+            manageParticipation({
+              plan,
+              userIdsToAdd: [
+                `Anonymous${
+                  plan.attendees?.filter((attendee) => attendee.startsWith('Anonymous')).length + 1
+                }:${firebaseAuth?.currentUser?.uid}`,
+              ],
+            });
+
+            toast.success('Successfully added 1 anonymous participant to plan!!');
+          }}
+        >
+          +1
+        </Button>
+      </Stack>
     </>
   );
 }

@@ -71,14 +71,18 @@ export default function FAQ(): JSX.Element {
 
                 <StyledAccordion
                   title='How to add or remove participants to plan?'
-                  body='The plan creator has option to add or remove participants. 
-            Of course you can mark your presence once you log in. 
-            If you are a plan creator just click on an avatar to remove the user from plan'
+                  body='Click add participant option at bottom of plan to add user. 
+                  To remove the user from plan, click on their avatar.
+                  You can only remove participants from a plan that were added by you.
+                  The plan creator can remove any participant except themselves. 
+                  '
                 />
 
                 <StyledAccordion
                   title='How to add user who has not logged in yet?'
-                  body='You cannot add anonymous users as of now. But this feature is releasing soon.'
+                  body='Just click +1 inside add participants to add anonymous users.
+                  You can remove the participants added by you by clicking on the avatar.
+                  '
                 />
               </Box>
             </Stack>

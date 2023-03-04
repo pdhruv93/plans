@@ -83,7 +83,14 @@ function PlanCard({
 
             <AvatarGroup total={plan.attendees?.length || 0}>
               {plan.attendees?.map((attendee) => {
-                const matchedUser = users?.find((user) => user.userId === attendee);
+                // if is anonymous, create a dummy user otherwise find correct user from users table
+                const matchedUser = attendee.startsWith('Anonymous')
+                  ? {
+                      userId: attendee,
+                      name: attendee.split(':')[0],
+                      photoURL: '',
+                    }
+                  : users?.find((user) => user.userId === attendee);
                 return (
                   <Tooltip
                     key={`plan-${plan.planId}-attendee-${attendee}`}
@@ -94,15 +101,20 @@ function PlanCard({
                       sx={{ width: '29px', height: '29px' }}
                       alt={matchedUser?.name}
                       src={matchedUser?.photoURL}
-                      onClick={() =>
-                        firebaseAuth.currentUser &&
-                        plan.creator === firebaseAuth.currentUser.uid &&
-                        matchedUser?.userId != plan.creator &&
-                        manageParticipation({
-                          plan,
-                          userIdsToRemove: matchedUser ? [matchedUser.userId] : [],
-                        })
-                      }
+                      onClick={() => {
+                        if (
+                          firebaseAuth.currentUser &&
+                          matchedUser?.userId != plan.creator &&
+                          (plan.creator === firebaseAuth.currentUser.uid ||
+                            attendee === firebaseAuth.currentUser.uid ||
+                            attendee.includes(firebaseAuth?.currentUser?.uid))
+                        ) {
+                          manageParticipation({
+                            plan,
+                            userIdsToRemove: matchedUser ? [matchedUser.userId] : [],
+                          });
+                        }
+                      }}
                     />
                   </Tooltip>
                 );
@@ -156,7 +168,7 @@ function PlanCard({
               <ShareIcon />
             </IconButton>
 
-            {firebaseAuth.currentUser?.uid === plan.creator && <AddParticipantModal plan={plan} />}
+            {firebaseAuth.currentUser && <AddParticipantModal plan={plan} />}
 
             {firebaseAuth.currentUser?.uid === plan.creator && (
               <IconButton aria-label='delete' onClick={() => deleteHandler(plan.planId)}>
