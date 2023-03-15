@@ -97,7 +97,15 @@ function PlansList({ planId }: PlansListPropsType) {
       </Grid>
 
       {hasNextPage && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 5,
+            marginBottom: 10,
+          }}
+        >
           <Link
             component='button'
             variant='body2'

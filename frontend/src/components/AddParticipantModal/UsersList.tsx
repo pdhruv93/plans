@@ -37,7 +37,9 @@ export default function UsersList({ plan }: { plan: PlanType }) {
           onClick={() => {
             manageParticipation({
               plan,
-              userIdsToAdd: selectedUsers.map((user) => user.userId),
+              userIdsToAdd: selectedUsers.map(
+                (user) => `${user.userId}:${firebaseAuth?.currentUser?.uid}`,
+              ),
             });
 
             toast.success(`Successfully added ${selectedUsers.length} participant to plan!!`);

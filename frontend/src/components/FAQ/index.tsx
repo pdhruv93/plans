@@ -66,7 +66,8 @@ export default function FAQ(): JSX.Element {
 
                 <StyledAccordion
                   title='Is it mandatory for host to participate?'
-                  body='As of now, yes. The system by default marks the host as an attendee.'
+                  body='When a plan is created, the host is added as an attendee. 
+                  But they can remove their participation later.'
                 />
 
                 <StyledAccordion

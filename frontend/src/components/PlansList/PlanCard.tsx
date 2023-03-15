@@ -84,13 +84,16 @@ function PlanCard({
             <AvatarGroup total={plan.attendees?.length || 0}>
               {plan.attendees?.map((attendee) => {
                 // if is anonymous, create a dummy user otherwise find correct user from users table
-                const matchedUser = attendee.startsWith('Anonymous')
+                const userDetails = attendee.split(':')[0];
+                const addedByUser = attendee.split(':')[1];
+
+                const matchedUser = userDetails.startsWith('Anonymous')
                   ? {
                       userId: attendee,
-                      name: attendee.split(':')[0],
+                      name: userDetails,
                       photoURL: '',
                     }
-                  : users?.find((user) => user.userId === attendee);
+                  : users?.find((user) => user.userId === userDetails);
                 return (
                   <Tooltip
                     key={`plan-${plan.planId}-attendee-${attendee}`}
@@ -104,14 +107,13 @@ function PlanCard({
                       onClick={() => {
                         if (
                           firebaseAuth.currentUser &&
-                          matchedUser?.userId != plan.creator &&
-                          (plan.creator === firebaseAuth.currentUser.uid ||
+                          (firebaseAuth.currentUser.uid === plan.creator ||
                             attendee === firebaseAuth.currentUser.uid ||
-                            attendee.includes(firebaseAuth?.currentUser?.uid))
+                            firebaseAuth?.currentUser?.uid === addedByUser)
                         ) {
                           manageParticipation({
                             plan,
-                            userIdsToRemove: matchedUser ? [matchedUser.userId] : [],
+                            userIdsToRemove: [attendee],
                           });
                         }
                       }}
@@ -137,11 +139,7 @@ function PlanCard({
                         : false
                     }
                     disabled={
-                      firebaseAuth.currentUser === null ||
-                      plan.creator === firebaseAuth.currentUser?.uid ||
-                      (firebaseAuth.currentUser != null &&
-                        !plan.attendees?.includes(firebaseAuth.currentUser?.uid) &&
-                        plan.attendees?.length >= plan.maxAttendees)
+                      !firebaseAuth.currentUser || plan.attendees?.length >= plan.maxAttendees
                     }
                     onChange={participateHandler(plan)}
                   />
