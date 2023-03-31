@@ -16,5 +16,6 @@ export const createUserOnLogin = functions.auth.user().onCreate((user: UserRecor
       email: user.email,
       photoURL: user.photoURL,
       roles: ['user'],
+      deviceId: '',
     }),
 );

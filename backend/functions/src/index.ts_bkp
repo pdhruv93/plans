@@ -105,3 +105,34 @@ export const toggleAttendees = functions.https.onCall(async (data, context) => {
       ...snapshot.data(),
     }));
 });
+
+
+export const scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(() => {
+  var date = new Date();
+  var today = new Date();
+  var nextDay = date.setDate(date.getDate() + 1);
+  
+  admin
+  .firestore()
+  .collection('plans')
+  .where('startTime', '>=', today)
+  .where('startTime', '<', nextDay)
+  .get()
+  .then((snapshot) =>
+    snapshot.docs.forEach((doc) => {
+      console.log(doc);
+      const message = {
+        data: {
+          title: `You have an upcoming plan`,
+          image: "",
+          icon: `/images/logo/assets/logo.png`,
+          body: `${doc.title} starting at ${doc.startTime}`,
+        },
+        tokens: fcmRegistrationToken,
+      }
+
+      admin.messaging().sendMulticast(message);
+    }
+  )
+);
+});
