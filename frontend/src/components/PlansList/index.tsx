@@ -8,6 +8,7 @@ import { usePlanData } from '../../queries/plans/usePlanData';
 import { usePlansData } from '../../queries/plans/usePlansData';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import GroupSVG from '../../assets/illustrations/group.svg';
 import Link from '@mui/material/Link';
 import NoPlansSVG from '../../assets/illustrations/no_plans.svg';
 import NotFoundSVG from '../../assets/illustrations/not_found.svg';
@@ -46,21 +47,39 @@ function PlansList({ planId }: PlansListPropsType) {
     };
 
   if (planId) {
-    return plan ? (
-      <PlanCard
-        plan={plan}
-        updateInProgress={toggledPlan?.planId === plan.planId && isSwitchLoading}
-        deleteHandler={deletePlanFromDB}
-        participateHandler={toggleGoing}
-      />
-    ) : (
-      <div className={styles.emptyPlansContainer}>
-        <img src={NotFoundSVG} className={styles.image} alt='Not Found' />
-        <Typography variant='h5' gutterBottom>
-          No such plan found
-        </Typography>
-      </div>
-    );
+    if (plan) {
+      if (firebaseAuth.currentUser) {
+        return (
+          <PlanCard
+            plan={plan}
+            updateInProgress={toggledPlan?.planId === plan.planId && isSwitchLoading}
+            deleteHandler={deletePlanFromDB}
+            participateHandler={toggleGoing}
+          />
+        );
+      } else {
+        return (
+          <div className={styles.emptyPlansContainer}>
+            <img src={GroupSVG} className={styles.image} alt='Login' />
+            <Typography variant='h5' gutterBottom>
+              You are just 1 step away.
+            </Typography>
+            <Typography gutterBottom>
+              You need to login to view this plan and mark your participation.
+            </Typography>
+          </div>
+        );
+      }
+    } else {
+      return (
+        <div className={styles.emptyPlansContainer}>
+          <img src={NotFoundSVG} className={styles.image} alt='Not Found' />
+          <Typography variant='h5' gutterBottom>
+            No such plan found
+          </Typography>
+        </div>
+      );
+    }
   }
 
   if (isLoading || isFetching) {

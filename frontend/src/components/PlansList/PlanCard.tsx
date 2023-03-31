@@ -83,17 +83,7 @@ function PlanCard({
 
             <AvatarGroup total={plan.attendees?.length || 0}>
               {plan.attendees?.map((attendee) => {
-                // if is anonymous, create a dummy user otherwise find correct user from users table
-                const userDetails = attendee.split(':')[0];
-                const addedByUser = attendee.split(':')[1];
-
-                const matchedUser = userDetails.startsWith('Anonymous')
-                  ? {
-                      userId: attendee,
-                      name: userDetails,
-                      photoURL: '',
-                    }
-                  : users?.find((user) => user.userId === userDetails);
+                const matchedUser = users?.find((user) => user.userId === attendee);
                 return (
                   <Tooltip
                     key={`plan-${plan.planId}-attendee-${attendee}`}
@@ -107,9 +97,7 @@ function PlanCard({
                       onClick={() => {
                         if (
                           firebaseAuth.currentUser &&
-                          (firebaseAuth.currentUser.uid === plan.creator ||
-                            attendee === firebaseAuth.currentUser.uid ||
-                            firebaseAuth?.currentUser?.uid === addedByUser)
+                          firebaseAuth.currentUser.uid === plan.creator
                         ) {
                           manageParticipation({
                             plan,
@@ -166,7 +154,9 @@ function PlanCard({
               <ShareIcon />
             </IconButton>
 
-            {firebaseAuth.currentUser && <AddParticipantModal plan={plan} />}
+            {firebaseAuth.currentUser && firebaseAuth.currentUser.uid === plan.creator && (
+              <AddParticipantModal plan={plan} />
+            )}
 
             {firebaseAuth.currentUser?.uid === plan.creator && (
               <IconButton aria-label='delete' onClick={() => deleteHandler(plan.planId)}>

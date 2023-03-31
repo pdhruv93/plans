@@ -36,9 +36,6 @@ export default function AddParticipantModal({ plan }: { plan: PlanType }) {
           <Typography id='modal-modal-title' sx={{ width: '80%', textAlign: 'center' }}>
             User suggestion will only be shown if the user has logged in atleast once.
           </Typography>
-          <Typography id='modal-modal-title' mb={3} sx={{ width: '80%', textAlign: 'center' }}>
-            Cannot find the user? Do +1 to add anonymous participants.
-          </Typography>
           <UsersList plan={plan} />
         </Box>
       </Modal>

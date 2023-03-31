@@ -56,7 +56,7 @@ export default function FAQ(): JSX.Element {
               <Box sx={{ width: '100%' }}>
                 <StyledAccordion
                   title='How can one see private plans?'
-                  body='Private plans are only shown if you have direct link or are in attendees list'
+                  body='Private plans are only shown if someone has direct link or they are in attendees list'
                 />
 
                 <StyledAccordion
@@ -72,18 +72,17 @@ export default function FAQ(): JSX.Element {
 
                 <StyledAccordion
                   title='How to add or remove participants to plan?'
-                  body='Click add participant option at bottom of plan to add user. 
+                  body=' Only plan creator can add or remove participants.
+                  Click add participant option at bottom of plan to add user. 
                   To remove the user from plan, click on their avatar.
-                  You can only remove participants from a plan that were added by you.
-                  The plan creator can remove any participant except themselves. 
                   '
                 />
 
                 <StyledAccordion
                   title='How to add user who has not logged in yet?'
-                  body='Just click +1 inside add participants to add anonymous users.
-                  You can remove the participants added by you by clicking on the avatar.
-                  '
+                  body='To avoid spam, we don´t allow anonymous users.
+                  You need to share the link with the person in order to mark their participation.
+                  If you are the plan creator, adjust the maximum count accordingly.'
                 />
               </Box>
             </Stack>

@@ -47,26 +47,28 @@ export default function UsersList({ plan }: { plan: PlanType }) {
         >
           Add participants
         </Button>
+        {/*
+          <Button
+            variant='contained'
+            color='primary'
+            disabled={plan.attendees?.length >= plan.maxAttendees}
+            onClick={() => {
+              manageParticipation({
+                plan,
+                userIdsToAdd: [
+                  `Anonymous${
+                    plan.attendees?.filter((attendee) => attendee.startsWith('Anonymous')).length +
+                    1
+                  }:${firebaseAuth?.currentUser?.uid}`,
+                ],
+              });
 
-        <Button
-          variant='contained'
-          color='primary'
-          disabled={plan.attendees?.length >= plan.maxAttendees}
-          onClick={() => {
-            manageParticipation({
-              plan,
-              userIdsToAdd: [
-                `Anonymous${
-                  plan.attendees?.filter((attendee) => attendee.startsWith('Anonymous')).length + 1
-                }:${firebaseAuth?.currentUser?.uid}`,
-              ],
-            });
-
-            toast.success('Successfully added 1 anonymous participant to plan!!');
-          }}
-        >
-          +1
-        </Button>
+              toast.success('Successfully added 1 anonymous participant to plan!!');
+            }}
+          >
+            +1
+          </Button>
+          */}
       </Stack>
     </>
   );
