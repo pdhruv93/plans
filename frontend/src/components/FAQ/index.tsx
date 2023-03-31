@@ -84,6 +84,18 @@ export default function FAQ(): JSX.Element {
                   You need to share the link with the person in order to mark their participation.
                   If you are the plan creator, adjust the maximum count accordingly.'
                 />
+
+                <StyledAccordion
+                  title='How do I turn on notifications?'
+                  body='When you login you will be prompted to allow notifications. 
+                  Also you can turn them on by clicking on the floating notification icon at the bottom'
+                />
+
+                <StyledAccordion
+                  title='What kind of notifications do I receive?'
+                  body='We don´t spam you with unnecessary notifications.
+                  You will only receive notification 1day before for the event where you are participating'
+                />
               </Box>
             </Stack>
           </Stack>

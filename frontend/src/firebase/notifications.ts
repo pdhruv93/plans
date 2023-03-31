@@ -9,6 +9,9 @@ export const requestForToken = () => {
   return getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_KEY })
     .then((currentToken) => {
       if (currentToken) {
+        toast.success(
+          'Notifications are turned on. You will be notified for the plans where you are participating',
+        );
         console.log('Updating notification token to users table at firestore....');
         // Update token to users table at firestore
         firebaseAuth.currentUser &&
