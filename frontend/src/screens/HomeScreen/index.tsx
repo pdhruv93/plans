@@ -1,4 +1,5 @@
 import { firebaseAuth } from '../../firebase';
+import { requestForToken } from '../../firebase/notifications';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -14,7 +15,11 @@ function HomeScreen() {
   const [_, setIsUserSignedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    const authStateListener = firebaseAuth.onAuthStateChanged((user) => setIsUserSignedIn(!!user));
+    const authStateListener = firebaseAuth.onAuthStateChanged((user) => {
+      // ask for notification permission is user has signed in
+      user && requestForToken();
+      setIsUserSignedIn(!!user);
+    });
     // unsubscribe on component demount
     return () => authStateListener();
   }, []);

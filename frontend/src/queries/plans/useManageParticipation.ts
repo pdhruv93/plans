@@ -20,7 +20,6 @@ const manageParticipation = ({
   userIdsToAdd?: string[];
   userIdsToRemove?: string[];
 }): Promise<PlanType> => {
-  console.log(userIdsToRemove);
   const planRef = doc(db, 'plans', plan.planId);
   const batch = writeBatch(db);
   batch.update(planRef, { attendees: arrayUnion(...userIdsToAdd) });
