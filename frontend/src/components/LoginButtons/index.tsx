@@ -33,7 +33,7 @@ export default function LoginButtons() {
         })
         .catch((error) => {
           console.error(error);
-          error.code !== 'auth/cancellled-popup-request' &&
+          error.code !== 'auth/cancelled-popup-request' &&
             toast.error(
               error.code === 'auth/account-exists-with-different-credential'
                 ? 'You already have an account with this email, try changing the provider'

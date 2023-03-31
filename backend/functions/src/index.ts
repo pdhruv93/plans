@@ -36,7 +36,7 @@ export const scheduledFunction = functions.pubsub.schedule('every 24 hours').onR
         const plan = doc.data();
         const deviceIds: string[] = [];
 
-        console.log(`Plan ${JSON.stringify(plan)}`);
+        functions.logger.info(`:::::::::::::::Plan ${JSON.stringify(plan)}`);
         admin
           .firestore()
           .collection('users')
@@ -57,8 +57,7 @@ export const scheduledFunction = functions.pubsub.schedule('every 24 hours').onR
           tokens: deviceIds,
         };
 
-        console.log(`Sending push notifications to ${deviceIds}`);
-
+        functions.logger.info(`:::::::::::::::Sending push notifications to ${deviceIds}`);
         admin.messaging().sendMulticast(message);
       }),
     );
