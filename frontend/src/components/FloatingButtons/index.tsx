@@ -21,7 +21,6 @@ export default function FloatingButtons() {
       {firebaseAuth.currentUser && (
         <Fab variant='extended' onClick={() => requestForToken()}>
           <NotificationsActiveIcon sx={{ mr: 1 }} />
-          Notifications
         </Fab>
       )}
       <FAQ />

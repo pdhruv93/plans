@@ -33,11 +33,12 @@ export default function LoginButtons() {
         })
         .catch((error) => {
           console.error(error);
-          toast.error(
-            error.code === 'auth/account-exists-with-different-credential'
-              ? 'You already have an account with this email, try changing the provider'
-              : 'Some error Signing in!!',
-          );
+          error.code !== 'auth/cancellled-popup-request' &&
+            toast.error(
+              error.code === 'auth/account-exists-with-different-credential'
+                ? 'You already have an account with this email, try changing the provider'
+                : 'Some error Signing in!!',
+            );
         });
     });
   };
