@@ -21,9 +21,8 @@ export const createUserOnLogin = functions.auth.user().onCreate((user: UserRecor
 );
 
 export const scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(() => {
-  const date = new Date();
   const today = new Date();
-  const nextDay = date.setDate(date.getDate() + 1);
+  const nextDay = new Date(today.getTime() + 24 * 60 * 60 * 1000);
 
   admin
     .firestore()
@@ -32,33 +31,36 @@ export const scheduledFunction = functions.pubsub.schedule('every 24 hours').onR
     .where('startTime', '<', nextDay)
     .get()
     .then((snapshot) =>
-      snapshot.docs.forEach((doc) => {
+      snapshot.docs.forEach(async (doc) => {
         const plan = doc.data();
         const deviceIds: string[] = [];
 
-        functions.logger.info(`:::::::::::::::Plan ${JSON.stringify(plan)}`);
-        admin
-          .firestore()
-          .collection('users')
-          .where('userId', 'in', plan.attendees)
-          .get()
-          .then((snapshot) =>
-            snapshot.docs.forEach((doc) => {
-              const user = doc.data();
-              deviceIds.push(user.deviceId);
-            }),
-          );
+        if (plan.attendees?.length > 0) {
+          await admin
+            .firestore()
+            .collection('users')
+            .where('userId', 'in', plan.attendees)
+            .get()
+            .then((snapshot) =>
+              snapshot.docs.forEach((doc) => {
+                const user = doc.data();
+                user.deviceId && deviceIds.push(user.deviceId);
+              }),
+            );
+        }
 
+        console.log(`:::::Sending push notifications for plan ${plan.title} to ${deviceIds}`);
         const message = {
           data: {
             title: 'You have an upcoming plan',
             body: `${plan.title} starting at ${plan.startTime}`,
+            LinkUrl: `/${doc.id}`,
           },
           tokens: deviceIds,
         };
-
-        functions.logger.info(`:::::::::::::::Sending push notifications to ${deviceIds}`);
         admin.messaging().sendMulticast(message);
       }),
     );
+
+  return null;
 });

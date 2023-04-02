@@ -33,6 +33,19 @@ npm run build
 Then manually copy the public and build folders to firebase app.
 firebase deploy
 
+### Run Local emulator
+https://firebase.google.com/docs/functions/local-emulator
+https://firebase.google.com/docs/emulator-suite/connect_and_prototype
+
+Go to the backend project where firebase.json is kept
+export GOOGLE_APPLICATION_CREDENTIALS="/Users/dhruv.pandey/Downloads/plans-1-d6be5fd67289.json"
+firebase init emulators
+firebase emulators:start
+
+Run npm run build inside functions folder to detect new functions.
+To run function from shell: 
+firebase functions:shell
+functionName()
 
 
 ### Google OAuth(One Tap Signin) with MongoDB Atlas

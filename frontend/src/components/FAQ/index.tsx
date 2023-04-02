@@ -55,6 +55,11 @@ export default function FAQ(): JSX.Element {
               <img src={FaqSVG} className={styles.image} alt='FAQ' />
               <Box sx={{ width: '100%' }}>
                 <StyledAccordion
+                  title='Can I use it as an app?'
+                  body='There is no need to download any separate app, just add the site to your home screen from browser.'
+                />
+
+                <StyledAccordion
                   title='How can one see private plans?'
                   body='Private plans are only shown if someone has direct link or they are in attendees list'
                 />
@@ -62,6 +67,13 @@ export default function FAQ(): JSX.Element {
                 <StyledAccordion
                   title='Create plan option is not visible to me?'
                   body='You need to login in order to create a plan or mark your presence'
+                />
+
+                <StyledAccordion
+                  title='Why can´t I sign in?'
+                  body='Check that your browser allows popups.
+                  For iOS users check here Settings > Safari > Disable "Block popups".
+                  '
                 />
 
                 <StyledAccordion
@@ -87,8 +99,19 @@ export default function FAQ(): JSX.Element {
 
                 <StyledAccordion
                   title='How do I turn on notifications?'
-                  body='When you login you will be prompted to allow notifications. 
-                  Also you can turn them on by clicking on the floating notification icon at the bottom'
+                  body='In order to get notifications, plans should have been added to your home screen.
+                  When you login you will be prompted to allow notifications. 
+                  Also you can turn them on by clicking on the floating notification icon at the bottom.
+                  Note if you are an iOS user, you need to be using iOS >=16.4
+                  and you need to enable notifications in Settings > Safari > Advanced > Experimental Features > Notifications.
+                  If you are an Android user, you need to enable browser notifications.
+                  '
+                />
+
+                <StyledAccordion
+                  title='What kind of notifications do I receive?'
+                  body='We don´t spam you with unnecessary notifications.
+                  You will only receive notification 1day before for the event where you are participating'
                 />
 
                 <StyledAccordion
