@@ -107,32 +107,30 @@ export const toggleAttendees = functions.https.onCall(async (data, context) => {
 });
 
 
-export const scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(() => {
-  var date = new Date();
-  var today = new Date();
-  var nextDay = date.setDate(date.getDate() + 1);
-  
+export const sendN = functions.https.onCall(() => {
+  const message: MulticastMessage = {
+    notification: {
+      title: 'Helloooooosss',
+      body: 'New',
+    },
+    webpush: {
+      fcmOptions: {
+        link: '7TcgMlzqWYX0HPdQ2kZo',
+      },
+    },
+    tokens: [
+      'f3iESeq3x2_ok1XjN62dNH:APA91bFtl7DSJJMqPL0Tc4ZH5CMPrVi2D1CdOjJ35fwoAhzmfQiNlA_XlUUZMGouAAxoxdHOs-p37poNejv9S8pY-cQ0wOhSReshuiQJlU5bdZqorKc2kn8vyq7HhZy7OlwsAG-DMElK',
+    ],
+  };
   admin
-  .firestore()
-  .collection('plans')
-  .where('startTime', '>=', today)
-  .where('startTime', '<', nextDay)
-  .get()
-  .then((snapshot) =>
-    snapshot.docs.forEach((doc) => {
-      console.log(doc);
-      const message = {
-        data: {
-          title: `You have an upcoming plan`,
-          image: "",
-          icon: `/images/logo/assets/logo.png`,
-          body: `${doc.title} starting at ${doc.startTime}`,
-        },
-        tokens: fcmRegistrationToken,
-      }
+    .messaging()
+    .sendMulticast(message)
+    .then((res) => {
+      console.log(':::Sent');
+      console.log(res);
+    });
 
-      admin.messaging().sendMulticast(message);
-    }
-  )
-);
+  console.log('::::Done');
+
+  return null;
 });

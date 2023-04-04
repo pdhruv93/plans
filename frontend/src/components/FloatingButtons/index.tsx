@@ -1,5 +1,6 @@
 import { firebaseAuth } from '../../firebase';
 import { requestForToken } from '../../firebase/notifications';
+import { toast } from 'react-toastify';
 import Box from '@mui/material/Box';
 import FAQ from '../FAQ';
 import Fab from '@mui/material/Fab/Fab';
@@ -19,7 +20,16 @@ export default function FloatingButtons() {
       }}
     >
       {firebaseAuth.currentUser && (
-        <Fab variant='extended' onClick={() => requestForToken()}>
+        <Fab
+          variant='extended'
+          onClick={() =>
+            Notification
+              ? requestForToken()
+              : toast.error(
+                  'Browser Notifications are turned off. Check FAQ section on how to enable',
+                )
+          }
+        >
           <NotificationsActiveIcon sx={{ mr: 1 }} />
         </Fab>
       )}

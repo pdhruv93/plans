@@ -99,13 +99,14 @@ export default function FAQ(): JSX.Element {
 
                 <StyledAccordion
                   title='How do I turn on notifications?'
-                  body='In order to get notifications, plans should have been added to your home screen.
-                  When you login you will be prompted to allow notifications. 
-                  Also you can turn them on by clicking on the floating notification icon at the bottom.
-                  Note if you are an iOS user, you need to be using iOS >=16.4
-                  and you need to enable notifications in Settings > Safari > Advanced > Experimental Features > Notifications.
-                  If you are an Android user, you need to enable browser notifications.
-                  '
+                  body='You need to add plans to your Home Screen. You also need to enable browser notifications.
+                  Once the plans has been added to your home screen, you can turn on notifications by clicking on the notification icon at the bottom.
+                  If you are an iOS user, you need to be using iOS >=16.4'
+                />
+
+                <StyledAccordion
+                  title='How do I enable browser notifications?'
+                  body='For iOS Settings > Safari > Advanced > Experimental Features > Notifications'
                 />
 
                 <StyledAccordion
